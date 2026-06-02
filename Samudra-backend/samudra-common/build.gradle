@@ -1,0 +1,11 @@
+plugins {
+    id 'java-library'
+}
+
+description = 'samudra-common'
+
+dependencies {
+    api 'org.springframework:spring-context'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}

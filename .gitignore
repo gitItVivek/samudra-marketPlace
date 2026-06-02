@@ -1,0 +1,34 @@
+# Local design docs (not versioned)
+/docs/
+
+# Gradle
+.gradle/
+**/build/
+
+# Keep wrapper JAR tracked (required for reproducible builds)
+!gradle/wrapper/gradle-wrapper.jar
+!**/gradle/wrapper/gradle-wrapper.jar
+
+# Java
+*.class
+*.log
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+out/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local secrets / overrides
+.env
+**/.env
+**/application-local.properties
+**/application-local.yml
+**/application-local.yaml

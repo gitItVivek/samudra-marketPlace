@@ -1,0 +1,8 @@
+rootProject.name = 'samudra-backend'
+
+include 'samudra-common'
+include 'samudra-listing'
+include 'samudra-community'
+include 'samudra-auction'
+include 'samudra-messaging'
+include 'samudra-core'

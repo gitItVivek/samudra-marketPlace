@@ -1,0 +1,24 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+description = 'samudra-core'
+
+dependencies {
+    implementation project(':samudra-common')
+    implementation project(':samudra-listing')
+    implementation project(':samudra-community')
+    implementation project(':samudra-auction')
+    implementation project(':samudra-messaging')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.flywaydb:flyway-core'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+}
