@@ -12,6 +12,15 @@ allprojects {
     }
 }
 
+// IntelliJ / Gradle run helpers: root has no sources, delegate to samudra-core
+tasks.register('classes') {
+    dependsOn ':samudra-core:classes'
+}
+
+tasks.register('bootRun') {
+    dependsOn ':samudra-core:bootRun'
+}
+
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.spring.dependency-management'
