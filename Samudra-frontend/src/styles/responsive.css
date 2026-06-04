@@ -1,0 +1,42 @@
+/* Mobile-first utilities; enhance from tablet/desktop up */
+
+.mobileOnly {
+  display: block;
+}
+
+.desktopOnly {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --layout-shell-padding: var(--space-xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --layout-max-width: 100%;
+    --layout-content-max: 1280px;
+    --layout-shell-padding: var(--space-2xl);
+    --bottom-nav-height: 0px;
+  }
+
+  .mobileOnly {
+    display: none !important;
+  }
+
+  .desktopOnly {
+    display: block;
+  }
+
+  .desktopOnlyFlex {
+    display: flex;
+  }
+}
+
+@media (min-width: 1440px) {
+  :root {
+    --layout-content-max: 1400px;
+  }
+}

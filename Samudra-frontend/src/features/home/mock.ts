@@ -1,0 +1,194 @@
+import type { CategoryItem, ListingSummary } from '@/shared/types';
+
+export const LOCATION = 'Bengaluru';
+
+export const categories: CategoryItem[] = [
+  { id: 'all', label: 'All', color: '#2d8a6e', icon: '📦' },
+  { id: 'electronics', label: 'Electronics', color: '#dbeafe', icon: '📱' },
+  { id: 'vehicles', label: 'Vehicles', color: '#ffedd5', icon: '🏍️' },
+  { id: 'property', label: 'Property', color: '#fce7f3', icon: '🏠' },
+  { id: 'furniture', label: 'Furniture', color: '#ede9fe', icon: '🛋️' },
+  { id: 'jobs', label: 'Jobs', color: '#d1fae5', icon: '💼' },
+  { id: 'services', label: 'Services', color: '#ffedd5', icon: '🔧' },
+  { id: 'fashion', label: 'Fashion', color: '#f3f4f6', icon: '👕' },
+];
+
+export const nearYouListings: ListingSummary[] = [
+  {
+    id: 'iphone-12',
+    title: 'iPhone 12 · 64GB · Black',
+    price: 14500,
+    location: 'Koramangala',
+    postedAgo: '2h ago',
+    condition: 'used',
+    boosted: true,
+    verifiedSeller: true,
+    icon: '📱',
+    sellerId: 'rahul-k',
+  },
+  {
+    id: 'sofa-set',
+    title: '3-seater Sofa · Brown leather',
+    price: 8500,
+    location: 'HSR Layout',
+    postedAgo: '5h ago',
+    condition: 'used',
+    icon: '🛋️',
+  },
+  {
+    id: 'activa-6g',
+    title: 'Honda Activa 6G · 2022',
+    price: 62000,
+    location: 'Indiranagar',
+    postedAgo: '1d ago',
+    condition: 'used',
+    icon: '🏍️',
+  },
+  {
+    id: 'macbook-air',
+    title: 'MacBook Air M1 · 256GB',
+    price: 52000,
+    location: 'Whitefield',
+    postedAgo: '3h ago',
+    condition: 'new',
+    boosted: true,
+    verifiedSeller: true,
+    icon: '💻',
+  },
+];
+
+export const trendingListing: ListingSummary = {
+  id: '2bhk-rent',
+  title: '2BHK for rent - Furnished',
+  price: 18000,
+  priceLabel: '₹18,000/mo',
+  location: 'Indiranagar',
+  postedAgo: '1d ago',
+  icon: '🏠',
+  sellerId: 'suresh-p',
+};
+
+export const serviceListings: ListingSummary[] = [
+  {
+    id: 'ac-repair',
+    title: 'AC Repair & Service',
+    price: 500,
+    priceLabel: '₹500 onwards',
+    location: 'Koramangala',
+    postedAgo: '4h ago',
+    icon: '🔧',
+  },
+  {
+    id: 'photography',
+    title: 'Event Photography',
+    price: 3000,
+    priceLabel: '₹3,000/day',
+    location: 'BTM Layout',
+    postedAgo: '6h ago',
+    icon: '📷',
+  },
+];
+
+/** Pool for grid feed — "See more" slices from this until exhausted */
+export const gridListingPool: ListingSummary[] = [
+  ...nearYouListings,
+  ...serviceListings,
+  {
+    id: 'ikea-dresser',
+    title: 'IKEA Malm dresser · white',
+    price: 6500,
+    location: 'Koramangala',
+    postedAgo: '1h ago',
+    icon: '🗄️',
+  },
+  {
+    id: 'ps5',
+    title: 'PlayStation 5 · Disc edition',
+    price: 38000,
+    location: 'HSR Layout',
+    postedAgo: '4h ago',
+    icon: '🎮',
+  },
+  {
+    id: 'dining-table',
+    title: 'Solid wood dining table · 6 seater',
+    price: 12000,
+    location: 'Jayanagar',
+    postedAgo: '8h ago',
+    icon: '🪑',
+  },
+  {
+    id: 'canon-camera',
+    title: 'Canon EOS 200D II',
+    price: 42000,
+    location: 'Indiranagar',
+    postedAgo: '12h ago',
+    icon: '📷',
+  },
+  {
+    id: 'office-chair',
+    title: 'Ergonomic office chair',
+    price: 7500,
+    location: 'Bellandur',
+    postedAgo: '1d ago',
+    icon: '💺',
+  },
+  {
+    id: 'guitar',
+    title: 'Yamaha F310 acoustic guitar',
+    price: 5500,
+    location: 'BTM',
+    postedAgo: '1d ago',
+    icon: '🎸',
+  },
+  {
+    id: 'washing-machine',
+    title: 'LG 7kg front load',
+    price: 18000,
+    location: 'Marathahalli',
+    postedAgo: '2d ago',
+    icon: '🧺',
+  },
+  {
+    id: 'kids-cycle',
+    title: 'Kids cycle · ages 6–9',
+    price: 2200,
+    location: 'Koramangala',
+    postedAgo: '2d ago',
+    icon: '🚲',
+  },
+  {
+    id: 'monitor-27',
+    title: 'Dell 27" 4K monitor',
+    price: 22000,
+    location: 'Whitefield',
+    postedAgo: '3d ago',
+    icon: '🖥️',
+  },
+  {
+    id: 'scooter-accessories',
+    title: 'Helmet + gloves bundle',
+    price: 1200,
+    location: 'Electronic City',
+    postedAgo: '3d ago',
+    icon: '🪖',
+  },
+  {
+    id: 'books-bundle',
+    title: 'UPSC prep books · 12 titles',
+    price: 800,
+    location: 'Rajajinagar',
+    postedAgo: '4d ago',
+    icon: '📚',
+  },
+  {
+    id: 'baby-stroller',
+    title: 'Chicco stroller · excellent',
+    price: 6500,
+    location: 'Hebbal',
+    postedAgo: '5d ago',
+    icon: '👶',
+  },
+];
+
+export const GRID_PAGE_SIZE = 8;
