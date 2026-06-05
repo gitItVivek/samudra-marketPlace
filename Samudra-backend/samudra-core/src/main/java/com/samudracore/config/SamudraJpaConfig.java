@@ -8,12 +8,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = {
         "com.samudra.identity.entity",
         "com.samudra.community.entity",
-        "com.samudra.listing.entity"
+        "com.samudra.listing.entity",
+        "com.samudra.messaging.entity"
 })
 @EnableJpaRepositories(basePackages = {
         "com.samudra.identity.repository",
         "com.samudra.community.repository",
-        "com.samudra.listing.repository"
+        "com.samudra.listing.repository",
+        "com.samudra.messaging.repository"
 })
 public class SamudraJpaConfig {
 }
