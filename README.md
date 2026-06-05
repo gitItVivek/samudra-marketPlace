@@ -2,8 +2,6 @@
 
 Community-first local peer-to-peer marketplace: listings, specialized **Communities** (e.g. city housing groups), and optional **auctions** (Phase 2).
 
-**Not** a clone of any commercial marketplace — original learning and portfolio project.
-
 ## Repository layout
 
 ```text
