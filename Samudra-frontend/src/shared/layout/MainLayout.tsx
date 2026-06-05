@@ -7,10 +7,13 @@ const NAV_ROUTES = ['/', '/browse', '/me'];
 
 export function MainLayout() {
   const { pathname } = useLocation();
+  const isChatThread = pathname.startsWith('/chats/') && pathname !== '/chats';
   const showBottomNav =
-    NAV_ROUTES.includes(pathname) ||
-    pathname === '/communities' ||
-    pathname.startsWith('/communities/');
+    !isChatThread &&
+    (NAV_ROUTES.includes(pathname) ||
+      pathname === '/communities' ||
+      (pathname.startsWith('/communities/') && !pathname.includes('/create')) ||
+      pathname === '/chats');
   const listingDetail = pathname.startsWith('/listings/');
   const isDesktopFooterPage = listingDetail;
 

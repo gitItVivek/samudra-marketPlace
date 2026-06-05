@@ -17,7 +17,7 @@
 @media (min-width: 1024px) {
   :root {
     --layout-max-width: 100%;
-    --layout-content-max: 1280px;
+    --layout-content-max: 100%;
     --layout-shell-padding: var(--space-2xl);
     --bottom-nav-height: 0px;
   }
@@ -35,8 +35,3 @@
   }
 }
 
-@media (min-width: 1440px) {
-  :root {
-    --layout-content-max: 1400px;
-  }
-}

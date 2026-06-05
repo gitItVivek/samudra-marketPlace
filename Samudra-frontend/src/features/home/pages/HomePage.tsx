@@ -1,5 +1,5 @@
 import { AppHeader } from '@/shared/components/AppHeader/AppHeader';
-import { SearchBar } from '@/features/home/components/SearchBar';
+import { SearchWithFilters } from '@/shared/components/SearchWithFilters/SearchWithFilters';
 import { CategoryStrip } from '@/features/home/components/CategoryStrip';
 import { HomeFeedToolbar } from '@/features/home/components/HomeFeedToolbar/HomeFeedToolbar';
 import { CuratedHomeFeed } from '@/features/home/components/CuratedHomeFeed/CuratedHomeFeed';
@@ -18,7 +18,7 @@ export function HomePage() {
       </div>
       {!isGrid && (
         <>
-          <SearchBar />
+          <SearchWithFilters />
           <CategoryStrip />
         </>
       )}

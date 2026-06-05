@@ -1,8 +1,33 @@
-.intro {
-  font-size: 14px;
-  color: var(--color-text-secondary);
+.page {
+  width: 100%;
+  max-width: var(--layout-content-max);
+  margin: 0 auto;
+  padding: var(--space-lg) var(--layout-shell-padding) var(--space-2xl);
+  padding-bottom: calc(var(--bottom-nav-height) + var(--space-2xl));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: var(--space-lg);
-  line-height: 1.5;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.createBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .search {
@@ -10,10 +35,10 @@
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-md);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--space-xl);
-  color: var(--color-text-muted);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-md);
 }
 
 .search input {
@@ -23,64 +48,163 @@
   font-size: 14px;
 }
 
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: var(--space-xl);
+  scrollbar-width: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+}
+
+.chipActive {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.section {
+  margin-bottom: var(--space-2xl);
+}
+
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.sectionHead h2 {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.sectionHead a {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-md);
+}
+
+.joinedCard {
+  position: relative;
+  padding: var(--space-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.privacy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  padding: 2px 8px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+}
+
+.cardIcon {
+  font-size: 36px;
+  margin-top: var(--space-sm);
+}
+
+.joinedCard h3 {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.joinedCard p {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.members {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.joinedBadge {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
 .list {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-sm);
 }
 
-.item {
+.listItem {
   display: flex;
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-md);
-  background: var(--color-bg);
-  border-radius: var(--radius-md);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 }
 
-.itemMain {
+.listMain {
   display: flex;
   gap: var(--space-md);
   flex: 1;
   min-width: 0;
 }
 
-.icon {
-  font-size: 36px;
-  flex-shrink: 0;
+.listIcon {
+  font-size: 32px;
 }
 
-.item h3 {
-  font-size: 16px;
+.listItem h3 {
+  font-size: 15px;
   font-weight: 600;
-  margin-bottom: 4px;
 }
 
-.desc {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  margin-bottom: 6px;
-}
-
-.meta {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.listMeta {
   font-size: 12px;
   color: var(--color-text-muted);
+  margin-top: 2px;
 }
 
-.item button {
+.listItem button {
   flex-shrink: 0;
-  min-width: 88px;
 }
 
 @media (min-width: 1024px) {
-  .list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg);
+  .page {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .cardGrid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }

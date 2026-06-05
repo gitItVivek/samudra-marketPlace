@@ -96,7 +96,11 @@ export type CategoryId =
   | 'furniture'
   | 'jobs'
   | 'services'
-  | 'fashion';
+  | 'fashion'
+  | 'books'
+  | 'sports'
+  | 'pets'
+  | 'home';
 
 export interface CategoryItem {
   id: CategoryId;

@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import { MapPin, Search } from 'lucide-react';
 import { GridListingCard } from '@/features/home/components/GridListingCard/GridListingCard';
 import { SuggestedCommunities } from '@/features/community/components/SuggestedCommunities/SuggestedCommunities';
-import { categories, gridListingPool, GRID_PAGE_SIZE, LOCATION } from '@/features/home/mock';
+import { SearchWithFilters } from '@/shared/components/SearchWithFilters/SearchWithFilters';
+import { ListingFilters } from '@/shared/components/ListingFilters/ListingFilters';
+import { categories, gridListingPool, GRID_PAGE_SIZE } from '@/features/home/mock';
+import { defaultListingFilters, type ListingFiltersState } from '@/shared/types/filters';
 import { Button } from '@/shared/components/Button/Button';
 import styles from './GridMarketplaceFeed.module.css';
 
 export function GridMarketplaceFeed() {
   const [visibleCount, setVisibleCount] = useState(GRID_PAGE_SIZE);
+  const [filters, setFilters] = useState<ListingFiltersState>(defaultListingFilters);
   const visible = gridListingPool.slice(0, visibleCount);
   const hasMore = visibleCount < gridListingPool.length;
 
@@ -18,29 +21,28 @@ export function GridMarketplaceFeed() {
   return (
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
-        <h2 className={styles.sidebarTitle}>Browse</h2>
-        <div className={styles.sidebarSearch}>
-          <Search size={18} />
-          <input type="search" placeholder="Search listings..." readOnly />
+        <div className={styles.sidebarInner}>
+          <h2 className={styles.sidebarTitle}>Browse</h2>
+          <div className={styles.mobileOnlyFilters}>
+            <SearchWithFilters showLocation={false} />
+          </div>
+          <nav className={styles.categoryNav} aria-label="Categories">
+            {categories.map((cat) => (
+              <button key={cat.id} type="button" className={styles.categoryItem}>
+                <span className={styles.catIcon}>{cat.icon}</span>
+                {cat.label}
+              </button>
+            ))}
+          </nav>
+          <div className={styles.filtersBlock}>
+            <ListingFilters filters={filters} onChange={setFilters} compact />
+          </div>
         </div>
-        <p className={styles.locationLabel}>
-          <MapPin size={14} />
-          {LOCATION}
-        </p>
-        <nav className={styles.categoryNav} aria-label="Categories">
-          {categories.map((cat) => (
-            <button key={cat.id} type="button" className={styles.categoryItem}>
-              <span className={styles.catIcon}>{cat.icon}</span>
-              {cat.label}
-            </button>
-          ))}
-        </nav>
       </aside>
 
       <div className={styles.main}>
-        <div className={styles.mobileSearch}>
-          <Search size={18} />
-          <input type="search" placeholder="Search listings..." readOnly />
+        <div className={styles.desktopSearch}>
+          <SearchWithFilters />
         </div>
         <SuggestedCommunities variant="cards" />
         <div className={styles.gridHeader}>
@@ -57,9 +59,6 @@ export function GridMarketplaceFeed() {
             <Button variant="secondary" onClick={loadMore}>
               See more listings
             </Button>
-            <p className={styles.loadHint}>
-              Showing {visible.length} of {gridListingPool.length} — more load when you connect the API
-            </p>
           </div>
         ) : (
           <p className={styles.endHint}>You&apos;ve seen all listings for now.</p>

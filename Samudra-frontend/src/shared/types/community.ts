@@ -1,3 +1,5 @@
+export type CommunityPrivacy = 'public' | 'private';
+
 export interface CommunitySummary {
   id: string;
   name: string;
@@ -7,6 +9,9 @@ export interface CommunitySummary {
   icon: string;
   location?: string;
   joined?: boolean;
+  privacy?: CommunityPrivacy;
+  category?: string;
+  since?: string;
 }
 
 export interface CommunityPost {
@@ -16,9 +21,13 @@ export interface CommunityPost {
   title: string;
   excerpt: string;
   authorName: string;
+  authorInitials?: string;
   postedAgo: string;
+  postedAt?: string;
   icon: string;
   price?: number;
+  location?: string;
+  tag?: string;
 }
 
 export interface CommunityDetail extends CommunitySummary {

@@ -5,7 +5,9 @@ import { ListingDetailPage } from '@/features/listing/pages/ListingDetailPage';
 import { PostListingPage } from '@/features/listing/pages/PostListingPage';
 import { ChatPage } from '@/features/messaging/pages/ChatPage';
 import { SellerProfilePage } from '@/features/identity/pages/SellerProfilePage';
-import { BrowsePlaceholderPage } from '@/features/browse/pages/BrowsePlaceholderPage';
+import { BrowseRedirectPage } from '@/features/browse/pages/BrowseRedirectPage';
+import { ChatInboxPage } from '@/features/messaging/pages/ChatInboxPage';
+import { CreateCommunityPage } from '@/features/community/pages/CreateCommunityPage';
 import { MyProfilePlaceholderPage } from '@/features/profile/pages/MyProfilePlaceholderPage';
 import { CommunitiesPage } from '@/features/community/pages/CommunitiesPage';
 import { CommunityDetailPage } from '@/features/community/pages/CommunityDetailPage';
@@ -15,14 +17,16 @@ export function AppRoutes() {
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<HomePage />} />
-        <Route path="browse" element={<BrowsePlaceholderPage />} />
+        <Route path="browse" element={<BrowseRedirectPage />} />
         <Route path="me" element={<MyProfilePlaceholderPage />} />
         <Route path="listings/:listingId" element={<ListingDetailPage />} />
         <Route path="sell" element={<PostListingPage />} />
         <Route path="sell/:step" element={<PostListingPage />} />
+        <Route path="chats" element={<ChatInboxPage />} />
         <Route path="chats/:conversationId" element={<ChatPage />} />
         <Route path="profiles/:profileId" element={<SellerProfilePage />} />
         <Route path="communities" element={<CommunitiesPage />} />
+        <Route path="communities/create" element={<CreateCommunityPage />} />
         <Route path="communities/:communityId" element={<CommunityDetailPage />} />
       </Route>
     </Routes>

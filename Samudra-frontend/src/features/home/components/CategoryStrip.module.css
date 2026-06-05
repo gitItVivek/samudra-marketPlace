@@ -14,8 +14,7 @@
     flex-wrap: wrap;
     overflow-x: visible;
     justify-content: flex-start;
-    max-width: var(--layout-content-max);
-    margin: 0 auto;
+    width: 100%;
     padding: 0 var(--layout-shell-padding) var(--space-lg);
   }
 }

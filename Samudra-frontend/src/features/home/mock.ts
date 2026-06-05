@@ -11,6 +11,10 @@ export const categories: CategoryItem[] = [
   { id: 'jobs', label: 'Jobs', color: '#d1fae5', icon: '💼' },
   { id: 'services', label: 'Services', color: '#ffedd5', icon: '🔧' },
   { id: 'fashion', label: 'Fashion', color: '#f3f4f6', icon: '👕' },
+  { id: 'books', label: 'Books', color: '#fef3c7', icon: '📚' },
+  { id: 'sports', label: 'Sports', color: '#ccfbf1', icon: '⚽' },
+  { id: 'pets', label: 'Pets', color: '#ffe4e6', icon: '🐾' },
+  { id: 'home', label: 'Home', color: '#e0e7ff', icon: '🏡' },
 ];
 
 export const nearYouListings: ListingSummary[] = [
@@ -89,7 +93,6 @@ export const serviceListings: ListingSummary[] = [
   },
 ];
 
-/** Pool for grid feed — "See more" slices from this until exhausted */
 export const gridListingPool: ListingSummary[] = [
   ...nearYouListings,
   ...serviceListings,

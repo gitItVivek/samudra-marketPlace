@@ -1,12 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Plus, Search, User } from 'lucide-react';
+import { Home, MessageCircle, Plus, Search, User, Users } from 'lucide-react';
 import { FeedViewToggle } from '@/shared/components/FeedViewToggle/FeedViewToggle';
 import styles from './DesktopNav.module.css';
 
 const LINKS = [
   { to: '/', label: 'Home', icon: Home, exact: true },
   { to: '/browse', label: 'Browse', icon: Search, exact: true },
-  { to: '/chats/demo', label: 'Chats', icon: MessageCircle, exact: false },
+  { to: '/communities', label: 'Communities', icon: Users, exact: false },
+  { to: '/chats', label: 'Chats', icon: MessageCircle, exact: false },
   { to: '/me', label: 'Profile', icon: User, exact: true },
 ] as const;
 
@@ -14,8 +15,11 @@ export function DesktopNav() {
   const { pathname } = useLocation();
   const isHome = pathname === '/';
 
-  const isActive = (to: string, exact: boolean) =>
-    exact ? pathname === to : pathname.startsWith(to);
+  const isActive = (to: string, exact: boolean) => {
+    if (to === '/communities') return pathname.startsWith('/communities');
+    if (to === '/chats') return pathname.startsWith('/chats');
+    return exact ? pathname === to : pathname.startsWith(to);
+  };
 
   return (
     <header className={`${styles.nav} desktopOnly`}>
