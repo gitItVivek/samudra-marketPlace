@@ -1,12 +1,15 @@
-package com.samudra.identity.repository;
+package com.samudra.identity.dal;
 
 import com.samudra.identity.entity.User;
+
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+public interface UserDal {
 
-public interface UserRepository extends JpaRepository<User, UUID> {
+    User save(User user);
+
+    Optional<User> findById(UUID id);
 
     Optional<User> findByEmail(String email);
 

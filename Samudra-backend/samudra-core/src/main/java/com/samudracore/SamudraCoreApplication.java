@@ -9,7 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         "com.samudracore",
         "com.samudra.identity",
         "com.samudra.community",
-        "com.samudra.listing"
+        "com.samudra.listing",
+        "com.samudra.messaging"
 })
 @EnableJpaAuditing
 public class SamudraCoreApplication {
