@@ -1,0 +1,87 @@
+.card {
+  display: flex;
+  gap: var(--space-md);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (min-width: 1024px) {
+  .card {
+    padding: var(--space-lg);
+  }
+}
+
+.iconArea {
+  width: 80px;
+  height: 80px;
+  background: #f3f4f6;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+@media (min-width: 768px) {
+  .iconArea {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+.icon {
+  font-size: 36px;
+}
+
+@media (min-width: 768px) {
+  .icon {
+    font-size: 48px;
+  }
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.price {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.seller {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.sellerAvatar {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

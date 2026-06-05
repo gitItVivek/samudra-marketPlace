@@ -1,0 +1,78 @@
+.strip {
+  display: flex;
+  gap: var(--space-md);
+  overflow-x: auto;
+  padding: var(--space-md) var(--layout-shell-padding);
+  background: var(--color-surface);
+  scrollbar-width: none;
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .strip {
+    background: var(--color-bg);
+    flex-wrap: wrap;
+    overflow-x: visible;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 var(--layout-shell-padding) var(--space-lg);
+  }
+}
+
+.strip::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .item {
+    min-width: 72px;
+  }
+}
+
+.iconBox {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .iconBox {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.icon {
+  font-size: 22px;
+}
+
+@media (min-width: 1024px) {
+  .icon {
+    font-size: 28px;
+  }
+}
+
+.label {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.item.active .label {
+  color: var(--color-primary);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: 2px;
+}

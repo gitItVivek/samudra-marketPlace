@@ -1,0 +1,67 @@
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: var(--space-lg);
+  gap: 4px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+.circle {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  z-index: 1;
+}
+
+.done {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.active {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.label {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  margin-top: 6px;
+  text-align: center;
+}
+
+.labelActive {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.line {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--color-border);
+  z-index: 0;
+}
+
+.step:last-child .line {
+  display: none;
+}

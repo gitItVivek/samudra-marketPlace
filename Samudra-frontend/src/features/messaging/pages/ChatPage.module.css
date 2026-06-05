@@ -1,0 +1,247 @@
+.chatHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex: 1;
+}
+
+.headerActions {
+  display: flex;
+  gap: var(--space-sm);
+  color: var(--color-text-secondary);
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.online {
+  font-size: 12px;
+  color: var(--color-verified);
+}
+
+.listingBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-cream);
+}
+
+.listingIcon {
+  font-size: 32px;
+}
+
+.listingInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.listingTitle {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.listingMeta {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.listingPrice {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.viewLink {
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.safetyTip {
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-warning-bg);
+  border-bottom: 1px solid var(--color-warning-border);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.messages {
+  flex: 1;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  min-height: 300px;
+}
+
+.dateSep {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.msgRow {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.msgRow.sent {
+  justify-content: flex-end;
+}
+
+.msgAvatar {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bubble {
+  max-width: 260px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.bubbleSent {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.msgTime {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+  display: block;
+}
+
+.sent .msgTime {
+  text-align: right;
+}
+
+.systemMsg {
+  align-self: center;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.inputArea {
+  position: sticky;
+  bottom: 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.quickReplies {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin-bottom: var(--space-md);
+  scrollbar-width: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.attachBtn {
+  color: var(--color-text-muted);
+}
+
+.input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  outline: none;
+}
+
+.sendBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .chatHeader {
+    max-width: var(--layout-content-max);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .listingBar,
+  .safetyTip {
+    max-width: var(--layout-content-max);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .messages {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    min-height: 400px;
+    padding: var(--space-2xl) var(--layout-shell-padding);
+  }
+
+  .bubble {
+    max-width: 480px;
+  }
+
+  .inputArea {
+    max-width: var(--layout-content-max);
+    margin: 0 auto;
+    width: 100%;
+    padding: var(--space-lg) var(--layout-shell-padding);
+  }
+}
