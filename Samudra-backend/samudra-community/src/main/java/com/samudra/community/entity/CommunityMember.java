@@ -1,46 +1,58 @@
 package com.samudra.community.entity;
 
-import com.samudra.common.config.BaseEntity;
 import com.samudra.common.enums.MemberRole;
 import com.samudra.common.enums.MemberStatus;
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
 @Table(name = "community_members")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommunityMember extends BaseEntity {
+public class CommunityMember {
 
-    // real FK — within samudra-community module
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_id", nullable = false)
     private Community community;
 
-    // logical reference to users.id — no FK constraint (cross-module)
     @Column(nullable = false)
     private UUID userId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
+    @Builder.Default
     private MemberRole role = MemberRole.MEMBER;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
+    @Builder.Default
     private MemberStatus status = MemberStatus.ACTIVE;
 
     @Column(nullable = false)
+    @Builder.Default
     private Instant joinedAt = Instant.now();
 
     @Column

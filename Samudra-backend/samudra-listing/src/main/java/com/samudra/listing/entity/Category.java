@@ -1,18 +1,37 @@
 package com.samudra.listing.entity;
 
-import com.samudra.common.config.BaseEntity;
 import com.samudra.common.enums.CategoryType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Table(name = "categories")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category extends BaseEntity {
+public class Category {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @Column(nullable = false, length = 100)
     private String name;
@@ -27,7 +46,6 @@ public class Category extends BaseEntity {
     @Column(nullable = false, length = 30)
     private CategoryType categoryType;
 
-    // self-referencing FK — within same module, real FK is fine
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id", referencedColumnName = "id")
     private Category parent;
@@ -36,8 +54,10 @@ public class Category extends BaseEntity {
     private String iconUrl;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer displayOrder = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isActive = true;
 }

@@ -31,6 +31,11 @@ public class UserDalImpl implements UserDal {
     }
 
     @Override
+    public Optional<User> findByGoogleId(String googleId) {
+        return userRepository.findByGoogleId(googleId);
+    }
+
+    @Override
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

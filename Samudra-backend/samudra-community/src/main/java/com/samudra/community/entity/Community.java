@@ -1,27 +1,39 @@
 package com.samudra.community.entity;
 
-import com.samudra.common.config.BaseEntity;
 import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.CommunityStatus;
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.time.Instant;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "communities")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Community extends BaseEntity {
+public class Community {
 
-    // logical reference to users.id — no FK constraint (cross-module)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @Column(nullable = false)
     private UUID createdBy;
 
@@ -49,15 +61,19 @@ public class Community extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
+    @Builder.Default
     private CommunityStatus status = CommunityStatus.ACTIVE;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isPrivate = false;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer memberCount = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer listingCount = 0;
 
     @Column

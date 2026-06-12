@@ -1,43 +1,48 @@
 package com.samudra.listing.entity;
 
-import com.samudra.common.config.BaseEntity;
 import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.ListingCondition;
 import com.samudra.common.enums.ListingStatus;
 import com.samudra.common.enums.ListingType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 @Entity
 @Table(name = "listings")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Listing extends BaseEntity {
+public class Listing {
 
-    // logical reference to users.id — no FK constraint (cross-module)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @Column(nullable = false)
     private UUID userId;
 
-    // logical reference to categories.id — no FK constraint (cross-module)
     @Column(nullable = false)
     private UUID categoryId;
 
-    // denormalized from category for fast filtering — no join needed
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private CategoryType categoryType;
@@ -58,12 +63,14 @@ public class Listing extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
+    @Builder.Default
     private ListingStatus status = ListingStatus.DRAFT;
 
     @Column(precision = 12, scale = 2)
     private BigDecimal price;
 
     @Column(nullable = false, length = 5)
+    @Builder.Default
     private String currency = "INR";
 
     @Column(nullable = false, length = 100)
@@ -82,12 +89,15 @@ public class Listing extends BaseEntity {
     private BigDecimal longitude;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer viewCount = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer chatCount = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isBoosted = false;
 
     @Column

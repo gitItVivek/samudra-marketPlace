@@ -1,7 +1,10 @@
 package com.samudracore;
 
+import com.samudra.identity.config.GoogleOAuthProperties;
+import com.samudra.identity.config.JwtProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 
@@ -13,6 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         "com.samudra.messaging"
 })
 @EnableJpaAuditing
+@EnableConfigurationProperties({JwtProperties.class, GoogleOAuthProperties.class})
 public class SamudraCoreApplication {
 
     public static void main(String[] args) {

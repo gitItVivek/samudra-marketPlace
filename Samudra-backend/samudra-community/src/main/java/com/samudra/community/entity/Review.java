@@ -1,34 +1,46 @@
 package com.samudra.community.entity;
 
-
-import com.samudra.common.config.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
 @Table(name = "reviews")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Review extends BaseEntity {
+public class Review {
 
-    // logical reference to users.id — no FK constraint (cross-module)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @Column(nullable = false)
     private UUID reviewerId;
 
-    // logical reference to users.id — no FK constraint (cross-module)
     @Column(nullable = false)
     private UUID targetUserId;
 
-    // logical reference to listings.id — no FK constraint (cross-module)
-    // nullable — future general reviews without listing context
     @Column
     private UUID listingId;
 
-    // validated in service layer: 1 to 5
     @Column(nullable = false)
     private Integer rating;
 
