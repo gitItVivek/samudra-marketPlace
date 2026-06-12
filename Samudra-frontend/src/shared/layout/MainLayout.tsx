@@ -3,7 +3,7 @@ import { BottomNav } from '@/shared/components/BottomNav/BottomNav';
 import { DesktopNav } from '@/shared/components/DesktopNav/DesktopNav';
 import styles from './MainLayout.module.css';
 
-const NAV_ROUTES = ['/', '/browse', '/me'];
+const NAV_ROUTES = ['/home', '/browse', '/me'];
 
 export function MainLayout() {
   const { pathname } = useLocation();

@@ -23,9 +23,10 @@ Copy `.env.example` to `.env`:
 
 ```
 VITE_API_BASE_URL=http://localhost:8080
+VITE_GOOGLE_CLIENT_ID=your-google-oauth-client-id.apps.googleusercontent.com
 ```
 
-Backend APIs are not wired yet; screens use mock data under `src/features/*/mock.ts`.
+**Auth** screens call `src/api/auth.ts` (paths in `src/api/paths.ts`). Marketplace screens still use mock data under `src/features/*/mock.ts`.
 
 ## Design screens
 
@@ -33,12 +34,29 @@ Reference PNGs (not bundled):
 
 | File | Route |
 |------|-------|
-| screen1.png | `/` Home |
+| — | `/` Landing page |
+| screen1.png | `/home` Marketplace feed |
 | screen2.png | `/listings/:listingId` |
 | screen3.png | `/sell` Post listing (step 2) |
 | screen4.png | `/chats/:conversationId` |
 | screen5.png | `/profiles/:profileId` |
-| facebookMarketPlace screeen.png | `/` Grid feed (toggle) |
+| facebookMarketPlace screeen.png | `/home` Grid feed (toggle) |
+
+**Landing & auth:**
+
+| Route | Screen |
+|-------|--------|
+| `/` | Marketing landing (Log in / Sign up top-right) |
+
+**Auth:**
+
+| Route | Screen |
+|-------|--------|
+| `/auth` | Welcome — Google + email entry |
+| `/auth/login` | Email sign in |
+| `/auth/register` | Email register |
+| `/auth/verify-email` | 6-digit OTP verification |
+| `/me` | Account (signed in / guest CTA) |
 
 **Feed views (home):** **Discover** (sections) vs **Grid** (marketplace-style dense grid + See more). Toggle on desktop nav (next to Sell) or mobile feed toolbar.
 
