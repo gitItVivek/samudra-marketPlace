@@ -1,10 +1,10 @@
 package com.samudra.identity.entity;
 
-import com.samudra.common.config.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -12,14 +12,27 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "marketplace_profiles")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MarketplaceProfile extends BaseEntity {
+public class MarketplaceProfile {
 
-    // logical reference to users.id — no FK constraint (cross-module)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @Column(nullable = false, unique = true)
     private UUID userId;
 
@@ -35,19 +48,24 @@ public class MarketplaceProfile extends BaseEntity {
     @Column(length = 100)
     private String state;
 
-    @Column(precision = 3, scale = 2)
+    @Column(nullable = false, precision = 3, scale = 2)
+    @Builder.Default
     private BigDecimal avgRating = BigDecimal.ZERO;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer totalReviews = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer totalListings = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer totalSold = 0;
 
     @Column(nullable = false)
+    @Builder.Default
     private Integer totalRemoved = 0;
 
     @Column
@@ -57,6 +75,7 @@ public class MarketplaceProfile extends BaseEntity {
     private Instant lastActiveAt;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isProfilePublic = true;
 
     @Column

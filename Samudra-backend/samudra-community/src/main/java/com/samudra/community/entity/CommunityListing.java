@@ -1,47 +1,54 @@
 package com.samudra.community.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import com.samudra.common.config.BaseEntity;
 import jakarta.persistence.*;
+import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.UUID;
-import lombok.Builder;
 
 @Entity
 @Table(name = "community_listings")
+@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommunityListing extends BaseEntity {
+public class CommunityListing {
 
-    // real FK — within samudra-community module
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID id;
+
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
+    private Instant createdAt;
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    private Instant updatedAt;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_id", nullable = false)
     private Community community;
 
-    // logical reference to listings.id — no FK constraint (cross-module)
     @Column(nullable = false)
     private UUID listingId;
 
-    // logical reference to users.id — no FK constraint (cross-module)
     @Column(nullable = false)
     private UUID postedBy;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isApproved = true;
 
     @Column
     private Instant approvedAt;
 
-    // logical reference to users.id — no FK constraint (cross-module)
     @Column
     private UUID approvedBy;
 }

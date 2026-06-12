@@ -13,5 +13,7 @@ public interface UserDal {
 
     Optional<User> findByEmail(String email);
 
+    Optional<User> findByGoogleId(String googleId);
+
     boolean existsByEmail(String email);
 }
