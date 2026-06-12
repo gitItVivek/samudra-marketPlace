@@ -1,5 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
 import { MainLayout } from '@/shared/layout/MainLayout';
+import { LandingPage } from '@/features/landing/pages/LandingPage';
+import { AuthLayout } from '@/features/identity/layout/AuthLayout';
+import { AuthWelcomePage } from '@/features/identity/pages/AuthWelcomePage';
+import { LoginPage } from '@/features/identity/pages/LoginPage';
+import { RegisterPage } from '@/features/identity/pages/RegisterPage';
+import { VerifyEmailPage } from '@/features/identity/pages/VerifyEmailPage';
 import { HomePage } from '@/features/home/pages/HomePage';
 import { ListingDetailPage } from '@/features/listing/pages/ListingDetailPage';
 import { PostListingPage } from '@/features/listing/pages/PostListingPage';
@@ -8,17 +14,24 @@ import { SellerProfilePage } from '@/features/identity/pages/SellerProfilePage';
 import { BrowseRedirectPage } from '@/features/browse/pages/BrowseRedirectPage';
 import { ChatInboxPage } from '@/features/messaging/pages/ChatInboxPage';
 import { CreateCommunityPage } from '@/features/community/pages/CreateCommunityPage';
-import { MyProfilePlaceholderPage } from '@/features/profile/pages/MyProfilePlaceholderPage';
+import { MyAccountPage } from '@/features/profile/pages/MyAccountPage';
 import { CommunitiesPage } from '@/features/community/pages/CommunitiesPage';
 import { CommunityDetailPage } from '@/features/community/pages/CommunityDetailPage';
 
 export function AppRoutes() {
   return (
     <Routes>
+      <Route index element={<LandingPage />} />
+      <Route path="auth" element={<AuthLayout />}>
+        <Route index element={<AuthWelcomePage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="verify-email" element={<VerifyEmailPage />} />
+      </Route>
       <Route element={<MainLayout />}>
-        <Route index element={<HomePage />} />
+        <Route path="home" element={<HomePage />} />
         <Route path="browse" element={<BrowseRedirectPage />} />
-        <Route path="me" element={<MyProfilePlaceholderPage />} />
+        <Route path="me" element={<MyAccountPage />} />
         <Route path="listings/:listingId" element={<ListingDetailPage />} />
         <Route path="sell" element={<PostListingPage />} />
         <Route path="sell/:step" element={<PostListingPage />} />

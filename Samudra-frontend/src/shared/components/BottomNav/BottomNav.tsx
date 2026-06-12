@@ -7,7 +7,7 @@ export function BottomNav() {
 
   return (
     <nav className={styles.nav}>
-      <Link to="/" className={`${styles.item} ${pathname === '/' ? styles.active : ''}`}>
+      <Link to="/home" className={`${styles.item} ${pathname === '/home' ? styles.active : ''}`}>
         <Home size={22} />
         <span>Home</span>
       </Link>

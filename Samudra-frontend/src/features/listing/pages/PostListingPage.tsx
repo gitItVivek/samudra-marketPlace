@@ -27,7 +27,7 @@ export function PostListingPage() {
           Save draft
         </button>
       }
-      onBack={() => navigate('/')}
+      onBack={() => navigate('/home')}
       stickyFooter={
         step === 2 ? (
           <Button variant="primary" fullWidth onClick={() => goStep(3)}>

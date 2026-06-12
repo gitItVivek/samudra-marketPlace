@@ -11,11 +11,12 @@ export function Button({
   fullWidth,
   children,
   className,
+  type = 'button',
   ...props
 }: ButtonProps) {
   return (
     <button
-      type="button"
+      type={type}
       className={`${styles.button} ${styles[variant]} ${fullWidth ? styles.fullWidth : ''} ${className ?? ''}`}
       {...props}
     >
