@@ -13,7 +13,7 @@ export function SocialAuthButtons({
   disabled,
   onError,
 }: SocialAuthButtonsProps) {
-  const { hiddenHostRef, triggerGoogleSignIn } = useGoogleIdSignIn(onGoogleCredential);
+  const { triggerGoogleSignIn } = useGoogleIdSignIn(onGoogleCredential);
 
   const handleGoogle = async () => {
     if (disabled) return;
@@ -30,7 +30,6 @@ export function SocialAuthButtons({
 
   return (
     <div className={styles.wrap}>
-      <div ref={hiddenHostRef} className={styles.hiddenGoogleHost} aria-hidden />
       <div className={styles.row}>
         <button
           type="button"

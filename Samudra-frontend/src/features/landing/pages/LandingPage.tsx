@@ -13,7 +13,6 @@ import {
 import { ROUTES } from '@/app/paths';
 import { useTypewriter } from '@/features/landing/hooks/useTypewriter';
 import { LandingHeader } from '@/features/landing/components/LandingHeader/LandingHeader';
-import { BrandLogo } from '@/shared/components/BrandLogo/BrandLogo';
 import { Button } from '@/shared/components/Button/Button';
 import styles from './LandingPage.module.css';
 
@@ -39,38 +38,32 @@ const FEATURES = [
     icon: ShoppingBag,
     title: 'Buy & sell goods and services',
     body: 'Furniture, bikes, tuition, photography — list with clear prices and photos so buyers know exactly what they are getting.',
-    tag: 'Core',
   },
   {
     icon: ShieldCheck,
     title: 'Profiles you can trust',
     body: 'See verification, ratings, and listing history before you message. Know who you are dealing with from the start.',
-    tag: null,
   },
   {
     icon: Building2,
     title: 'Rentals & requirements',
     body: 'Browse owner listings or post what you need — a 2BHK, a flatmate, a tutor. Requirements stay visible to the right people.',
-    tag: 'Popular',
     featured: true,
   },
   {
     icon: MessageCircle,
     title: 'Chat tied to listings',
     body: 'Every conversation stays linked to the listing. Negotiate, agree on a meetup, and close the loop in one thread.',
-    tag: null,
   },
   {
     icon: Wrench,
     title: 'Local services',
     body: 'AC repair, packers, wedding photographers — discover providers in your city with reviews from real customers.',
-    tag: null,
   },
   {
     icon: Users,
     title: 'Post a want-ad',
     body: 'Looking for something specific? Say it once. Sellers and neighbours who have it can come to you.',
-    tag: null,
   },
 ];
 
@@ -143,18 +136,12 @@ export function LandingPage() {
       <LandingHeader />
 
       <section className={styles.hero}>
-        <div className={styles.heroGlow} aria-hidden />
         <div className={styles.heroContent}>
-          <div className={styles.heroEyebrow}>
-            <span className={styles.pulseDot} />
-            Community-first marketplace · Metros &amp; tier-2 cities
-          </div>
-
-          <BrandLogo size="lg" className={styles.heroBrand} />
+          <p className={styles.heroEyebrow}>Community marketplace for Indian cities</p>
 
           <h1 className={styles.heroTitle}>
-            Your city.
-            <em> Your marketplace.</em>
+            Buy, sell, and connect
+            <span className={styles.heroTitleAccent}> in your neighbourhood</span>
           </h1>
           <p className={styles.typewriter} aria-live="polite">
             {typewriterText}
@@ -179,26 +166,23 @@ export function LandingPage() {
             </Link>
           </div>
 
-          <div className={styles.socialProof}>
-            <span><strong>Zero</strong> listing fees to start</span>
-            <span className={styles.proofDot} />
-            <span><strong>Verified</strong> profiles</span>
-            <span className={styles.proofDot} />
-            <span><strong>Direct</strong> chat</span>
-            <span className={styles.proofDot} />
-            <span><strong>Local</strong> communities</span>
-          </div>
+          <ul className={styles.socialProof}>
+            <li>No listing fees to start</li>
+            <li>Verified profiles</li>
+            <li>Direct chat</li>
+            <li>Local communities</li>
+          </ul>
         </div>
       </section>
 
-      <div className={styles.cardsStrip}>
+      <div className={styles.cardsStripWrap}>
+        <div className={styles.cardsStrip}>
         {LISTING_CARDS.map((card) => (
           <article key={card.title} className={styles.stripCard}>
             <div className={styles.stripCardImg}>{card.emoji}</div>
             <div className={styles.stripCardBody}>
               <p className={styles.stripPrice}>{card.price}</p>
               <p className={styles.stripTitle}>{card.title}</p>
-              <span className={styles.verifiedChip}>Verified seller</span>
               <p className={styles.stripMeta}>
                 <MapPin size={12} />
                 {card.city} · {card.ago}
@@ -206,6 +190,7 @@ export function LandingPage() {
             </div>
           </article>
         ))}
+        </div>
       </div>
 
       <section id="why" className={styles.section}>
@@ -264,7 +249,7 @@ export function LandingPage() {
             One platform. <em>Every local need.</em>
           </h2>
           <div className={styles.featureGrid}>
-            {FEATURES.map(({ icon: Icon, title, body, tag, featured }) => (
+            {FEATURES.map(({ icon: Icon, title, body, featured }) => (
               <article
                 key={title}
                 className={`${styles.featureCard} ${featured ? styles.featureCardFeatured : ''}`}
@@ -274,7 +259,6 @@ export function LandingPage() {
                 </div>
                 <h3>{title}</h3>
                 <p>{body}</p>
-                {tag && <span className={styles.featureTag}>{tag}</span>}
               </article>
             ))}
           </div>
@@ -370,7 +354,9 @@ export function LandingPage() {
       </div>
 
       <footer className={styles.footer}>
-        <BrandLogo size="sm" linkTo={ROUTES.landing} />
+        <Link to={ROUTES.landing} className={styles.footerBrand}>
+          Samudra
+        </Link>
         <p className={styles.footerTagline}>Marketplace for metros &amp; tier-2 India</p>
         <div className={styles.footerLinks}>
           <Link to={ROUTES.home}>Browse</Link>

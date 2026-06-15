@@ -1,7 +1,8 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, MessageCircle, Plus, Search, User, Users } from 'lucide-react';
+import { Home, MessageCircle, Plus, Search, Users } from 'lucide-react';
 import { ROUTES } from '@/app/paths';
 import { FeedViewToggle } from '@/shared/components/FeedViewToggle/FeedViewToggle';
+import { ProfileMenu } from '@/shared/components/ProfileMenu/ProfileMenu';
 import styles from './DesktopNav.module.css';
 
 const LINKS = [
@@ -9,7 +10,6 @@ const LINKS = [
   { to: '/browse', label: 'Browse', icon: Search, exact: true },
   { to: '/communities', label: 'Communities', icon: Users, exact: false },
   { to: '/chats', label: 'Chats', icon: MessageCircle, exact: false },
-  { to: '/me', label: 'Profile', icon: User, exact: true },
 ] as const;
 
 export function DesktopNav() {
@@ -47,6 +47,7 @@ export function DesktopNav() {
             <Plus size={18} />
             Sell
           </Link>
+          <ProfileMenu />
         </div>
       </div>
     </header>

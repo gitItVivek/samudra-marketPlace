@@ -57,14 +57,45 @@
 }
 
 .location {
+  display: none;
+}
+
+.locationField {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: var(--color-primary);
-  font-weight: 600;
-  font-size: 13px;
-  white-space: nowrap;
   flex-shrink: 0;
+  max-width: 140px;
+  border-left: 1px solid var(--color-border);
+  padding-left: var(--space-sm);
+  margin-left: var(--space-xs);
+}
+
+@media (min-width: 1024px) {
+  .locationField {
+    max-width: 180px;
+  }
+}
+
+.locationIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.locationInput {
+  border: none;
+  background: transparent;
+  outline: none;
+  min-width: 0;
+  width: 100%;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-primary);
+}
+
+.locationInput::placeholder {
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 .filterBtn {
@@ -122,11 +153,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  max-height: 75vh;
-  overflow-y: auto;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
   background: var(--color-surface);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  padding: var(--space-lg);
   z-index: 201;
   box-shadow: var(--shadow-md);
 }
@@ -138,7 +169,7 @@
     right: var(--layout-shell-padding);
     left: var(--layout-shell-padding);
     bottom: auto;
-    max-height: 480px;
+    max-height: min(520px, 70vh);
     margin-top: 8px;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-border);
@@ -149,12 +180,41 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-md);
+  padding: var(--space-lg) var(--space-lg) var(--space-sm);
   font-weight: 600;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-border);
 }
 
-@media (min-width: 1024px) {
-  .filtersHead {
-    display: none;
-  }
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+}
+
+.closeBtn:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.filtersBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-md) var(--space-lg);
+  min-height: 0;
+}
+
+.filtersFooter {
+  flex-shrink: 0;
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.applyBtn {
+  width: 100%;
 }

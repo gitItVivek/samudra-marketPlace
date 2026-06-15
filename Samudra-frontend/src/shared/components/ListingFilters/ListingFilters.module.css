@@ -10,18 +10,49 @@
 }
 
 .locationLink {
+  display: none;
+}
+
+.locationField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-xs);
+}
+
+.locationLabel {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
-  color: var(--color-primary);
-  font-weight: 500;
-  text-align: left;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.locationInput {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  background: var(--color-surface);
+}
+
+.locationInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.locationHint {
+  font-size: 12px;
+  color: var(--color-text-muted);
 }
 
 .field {
   border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
 }
 
 .label {
@@ -36,26 +67,27 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--color-text);
-  padding: 4px 0;
+  padding: 6px 0;
 }
 
 .sectionBody {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px;
+  margin-top: 4px;
+  padding-bottom: 4px;
 }
 
 .select {
   width: 100%;
-  margin-top: 8px;
-  padding: 10px 12px;
+  margin-top: 4px;
+  padding: 8px 10px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 13px;
   background: var(--color-surface);
 }
 
@@ -63,19 +95,20 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-top: 4px;
 }
 
 .priceRow input {
   flex: 1;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  font-size: 14px;
+  font-size: 13px;
   min-width: 0;
 }
 
 .priceRow span {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-text-muted);
 }
 
@@ -83,8 +116,8 @@
 .radioRow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
+  gap: 8px;
+  font-size: 13px;
   color: var(--color-text-secondary);
   cursor: pointer;
 }
@@ -95,5 +128,40 @@
 }
 
 .compact .title {
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.sidebar {
+  gap: var(--space-sm);
+}
+
+.sidebar .title {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.sidebar .field {
+  padding-bottom: 6px;
+}
+
+.sidebar .sectionHead {
+  font-size: 13px;
+  padding: 4px 0;
+}
+
+.sidebar .locationLabel {
+  font-size: 12px;
+}
+
+.sidebar .locationInput {
+  font-size: 12px;
+  padding: 7px 9px;
+}
+
+.sidebar .locationHint {
+  font-size: 11px;
 }

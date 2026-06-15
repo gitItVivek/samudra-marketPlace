@@ -4,15 +4,6 @@
   gap: var(--space-sm);
 }
 
-.hiddenGoogleHost {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-}
-
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;

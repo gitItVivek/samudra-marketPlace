@@ -5,6 +5,7 @@ export type DateListedOption = 'all' | '24h' | '7d' | '30d';
 export type AvailabilityOption = 'available' | 'all';
 
 export interface ListingFiltersState {
+  location: string;
   sort: SortOption;
   priceMin: string;
   priceMax: string;
@@ -15,6 +16,7 @@ export interface ListingFiltersState {
 }
 
 export const defaultListingFilters: ListingFiltersState = {
+  location: '',
   sort: 'recommended',
   priceMin: '',
   priceMax: '',

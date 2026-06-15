@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MapPin, Search, SlidersHorizontal, X } from 'lucide-react';
-import { LOCATION } from '@/features/home/mock';
 import { ListingFilters } from '@/shared/components/ListingFilters/ListingFilters';
+import { Button } from '@/shared/components/Button/Button';
 import {
   defaultListingFilters,
   type ListingFiltersState,
@@ -13,20 +13,52 @@ interface SearchWithFiltersProps {
   showLocation?: boolean;
 }
 
+function countActiveFilters(filters: ListingFiltersState): number {
+  return (
+    (filters.location.trim() ? 1 : 0) +
+    (filters.priceMin || filters.priceMax ? 1 : 0) +
+    (filters.conditions.length > 0 ? 1 : 0) +
+    (filters.dateListed !== 'all' ? 1 : 0) +
+    (filters.negotiableOnly ? 1 : 0) +
+    (filters.sort !== 'recommended' ? 1 : 0) +
+    (filters.availability !== 'available' ? 1 : 0)
+  );
+}
+
 export function SearchWithFilters({
   placeholder = 'Search cars, mobiles, furniture...',
   showLocation = true,
 }: SearchWithFiltersProps) {
   const [query, setQuery] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [filters, setFilters] = useState<ListingFiltersState>(defaultListingFilters);
+  const [appliedFilters, setAppliedFilters] = useState<ListingFiltersState>(defaultListingFilters);
+  const [draftFilters, setDraftFilters] = useState<ListingFiltersState>(defaultListingFilters);
 
-  const activeFilterCount =
-    (filters.priceMin || filters.priceMax ? 1 : 0) +
-    (filters.conditions.length > 0 ? 1 : 0) +
-    (filters.dateListed !== 'all' ? 1 : 0) +
-    (filters.negotiableOnly ? 1 : 0) +
-    (filters.sort !== 'recommended' ? 1 : 0);
+  const activeFilterCount = countActiveFilters(appliedFilters);
+  const displayLocation = filtersOpen ? draftFilters.location : appliedFilters.location;
+
+  const openFilters = () => {
+    setDraftFilters(appliedFilters);
+    setFiltersOpen(true);
+  };
+
+  const closeFilters = () => {
+    setDraftFilters(appliedFilters);
+    setFiltersOpen(false);
+  };
+
+  const applyFilters = () => {
+    setAppliedFilters(draftFilters);
+    setFiltersOpen(false);
+  };
+
+  const updateLocation = (location: string) => {
+    if (filtersOpen) {
+      setDraftFilters((prev) => ({ ...prev, location }));
+      return;
+    }
+    setAppliedFilters((prev) => ({ ...prev, location }));
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -41,15 +73,22 @@ export function SearchWithFilters({
             onChange={(e) => setQuery(e.target.value)}
           />
           {showLocation && (
-            <button type="button" className={styles.location}>
-              <MapPin size={16} />
-              {LOCATION}
-            </button>
+            <label className={styles.locationField}>
+              <MapPin size={16} className={styles.locationIcon} />
+              <input
+                type="text"
+                className={styles.locationInput}
+                placeholder="City or locality"
+                value={displayLocation}
+                onChange={(e) => updateLocation(e.target.value)}
+                aria-label="Location"
+              />
+            </label>
           )}
           <button
             type="button"
             className={`${styles.filterBtn} ${filtersOpen ? styles.filterBtnActive : ''}`}
-            onClick={() => setFiltersOpen(!filtersOpen)}
+            onClick={() => (filtersOpen ? closeFilters() : openFilters())}
             aria-label="Filters"
             aria-expanded={filtersOpen}
           >
@@ -63,19 +102,31 @@ export function SearchWithFilters({
 
       {filtersOpen && (
         <>
-          <div
-            className={styles.backdrop}
-            onClick={() => setFiltersOpen(false)}
-            aria-hidden
-          />
-          <div className={styles.filtersPanel}>
+          <div className={styles.backdrop} onClick={closeFilters} aria-hidden />
+          <div className={styles.filtersPanel} role="dialog" aria-label="Listing filters">
             <div className={styles.filtersHead}>
               <span>Filters</span>
-              <button type="button" onClick={() => setFiltersOpen(false)} aria-label="Close">
+              <button
+                type="button"
+                className={styles.closeBtn}
+                onClick={closeFilters}
+                aria-label="Close filters"
+              >
                 <X size={20} />
               </button>
             </div>
-            <ListingFilters filters={filters} onChange={setFilters} />
+            <div className={styles.filtersBody}>
+              <ListingFilters
+                filters={draftFilters}
+                onChange={setDraftFilters}
+                hideTitle
+              />
+            </div>
+            <div className={styles.filtersFooter}>
+              <Button variant="primary" className={styles.applyBtn} onClick={applyFilters}>
+                Apply filters
+              </Button>
+            </div>
           </div>
         </>
       )}
