@@ -1,6 +1,21 @@
 import type { ApiErrorBody } from '@/shared/types/auth';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8080';
+/**
+ * Dev: relative /v1 → Vite proxy → :8080 (no browser CORS).
+ * .env with VITE_API_BASE_URL=http://localhost:8080 bypasses the proxy — we avoid that in dev.
+ */
+function resolveApiBaseUrl(): string {
+  const configured = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '');
+  if (import.meta.env.DEV) {
+    if (!configured || configured === 'http://localhost:8080') {
+      return '';
+    }
+    return configured;
+  }
+  return configured ?? 'http://localhost:8080';
+}
+
+const baseUrl = resolveApiBaseUrl();
 
 export class ApiError extends Error {
   readonly status: number;

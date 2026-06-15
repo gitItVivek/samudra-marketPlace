@@ -100,7 +100,15 @@ export type CategoryId =
   | 'books'
   | 'sports'
   | 'pets'
-  | 'home';
+  | 'home'
+  | 'appliances'
+  | 'kids'
+  | 'beauty'
+  | 'music'
+  | 'garden'
+  | 'tickets'
+  | 'grocery'
+  | 'tools';
 
 export interface CategoryItem {
   id: CategoryId;

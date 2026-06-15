@@ -2,21 +2,11 @@
   display: flex;
   gap: var(--space-md);
   overflow-x: auto;
-  padding: var(--space-md) var(--layout-shell-padding);
+  padding: var(--space-sm) var(--layout-shell-padding) var(--space-md);
   background: var(--color-surface);
   scrollbar-width: none;
   width: 100%;
-}
-
-@media (min-width: 1024px) {
-  .strip {
-    background: var(--color-bg);
-    flex-wrap: wrap;
-    overflow-x: visible;
-    justify-content: flex-start;
-    width: 100%;
-    padding: 0 var(--layout-shell-padding) var(--space-lg);
-  }
+  border-bottom: 1px solid var(--color-border);
 }
 
 .strip::-webkit-scrollbar {
@@ -32,12 +22,6 @@
   flex-shrink: 0;
 }
 
-@media (min-width: 1024px) {
-  .item {
-    min-width: 72px;
-  }
-}
-
 .iconBox {
   width: 52px;
   height: 52px;
@@ -47,27 +31,16 @@
   justify-content: center;
 }
 
-@media (min-width: 1024px) {
-  .iconBox {
-    width: 64px;
-    height: 64px;
-  }
-}
-
 .icon {
   font-size: 22px;
-}
-
-@media (min-width: 1024px) {
-  .icon {
-    font-size: 28px;
-  }
 }
 
 .label {
   font-size: 11px;
   color: var(--color-text-secondary);
   font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .item.active .label {

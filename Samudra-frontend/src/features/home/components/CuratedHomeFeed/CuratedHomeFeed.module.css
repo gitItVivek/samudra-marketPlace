@@ -1,36 +1,73 @@
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding-bottom: var(--space-xl);
+}
+
 .section {
-  padding: var(--space-lg) var(--layout-shell-padding);
-  padding-top: var(--space-md);
+  padding: 0 var(--layout-shell-padding);
   max-width: var(--layout-content-max);
   margin: 0 auto;
   width: 100%;
 }
 
-.grid {
+.listingGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-md);
 }
 
+.servicesRow {
+  display: flex;
+  gap: var(--space-md);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.servicesRow::-webkit-scrollbar {
+  display: none;
+}
+
+.serviceCard {
+  flex: 0 0 min(260px, 78vw);
+  min-width: 0;
+}
+
 @media (min-width: 768px) {
-  .grid {
+  .feed {
+    gap: var(--space-lg);
+  }
+
+  .listingGrid {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-lg);
+  }
+
+  .serviceCard {
+    flex: 0 0 280px;
   }
 }
 
 @media (min-width: 1024px) {
-  .section {
-    padding: var(--space-xl) var(--layout-shell-padding);
+  .feed {
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
   }
 
-  .grid {
+  .listingGrid {
     grid-template-columns: repeat(4, 1fr);
   }
-}
 
-@media (min-width: 1440px) {
-  .grid {
-    grid-template-columns: repeat(5, 1fr);
+  .servicesRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    overflow: visible;
+  }
+
+  .serviceCard {
+    flex: unset;
+    width: auto;
   }
 }

@@ -1,0 +1,135 @@
+.root {
+  position: relative;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.trigger:hover,
+.triggerOpen {
+  color: var(--color-primary);
+  border-color: rgba(45, 138, 110, 0.35);
+  background: var(--color-primary-light);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 200;
+  min-width: 220px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  animation: menuIn 0.15s ease-out;
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.guestPanel {
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.guestTitle {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.guestHint {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin-bottom: var(--space-xs);
+}
+
+.primaryAction,
+.secondaryAction {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.primaryAction {
+  background: var(--color-primary);
+  color: white;
+}
+
+.primaryAction:hover {
+  opacity: 0.92;
+}
+
+.secondaryAction {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.secondaryAction:hover {
+  background: var(--color-bg);
+}
+
+.menuList {
+  list-style: none;
+  padding: var(--space-sm);
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text);
+  text-align: left;
+  transition: background 0.12s;
+}
+
+.menuItem:hover {
+  background: var(--color-bg);
+}
+
+.divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: var(--space-xs) var(--space-sm);
+}
+
+.signOut {
+  color: #b91c1c;
+}
+
+.signOut:hover {
+  background: #fef2f2;
+}

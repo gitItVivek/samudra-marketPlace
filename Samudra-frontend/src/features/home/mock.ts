@@ -15,6 +15,14 @@ export const categories: CategoryItem[] = [
   { id: 'sports', label: 'Sports', color: '#ccfbf1', icon: '⚽' },
   { id: 'pets', label: 'Pets', color: '#ffe4e6', icon: '🐾' },
   { id: 'home', label: 'Home', color: '#e0e7ff', icon: '🏡' },
+  { id: 'appliances', label: 'Appliances', color: '#e0f2fe', icon: '🧊' },
+  { id: 'kids', label: 'Kids', color: '#fce7f3', icon: '🧸' },
+  { id: 'beauty', label: 'Beauty', color: '#fdf2f8', icon: '💄' },
+  { id: 'music', label: 'Music', color: '#f3e8ff', icon: '🎸' },
+  { id: 'garden', label: 'Garden', color: '#dcfce7', icon: '🌿' },
+  { id: 'tickets', label: 'Tickets', color: '#fee2e2', icon: '🎫' },
+  { id: 'grocery', label: 'Grocery', color: '#fef9c3', icon: '🛒' },
+  { id: 'tools', label: 'Tools', color: '#f5f5f4', icon: '🛠️' },
 ];
 
 export const nearYouListings: ListingSummary[] = [
