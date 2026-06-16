@@ -12,7 +12,8 @@ function resolveApiBaseUrl(): string {
     }
     return configured;
   }
-  return configured ?? 'http://localhost:8080';
+  // Production: empty = same-origin (nginx proxies /v1 to backend)
+  return configured ?? '';
 }
 
 const baseUrl = resolveApiBaseUrl();

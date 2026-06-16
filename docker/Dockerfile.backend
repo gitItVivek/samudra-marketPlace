@@ -1,0 +1,15 @@
+# Multi-stage build: Gradle bootJar → JRE 21
+# Build context: repo root (C:\General\Samudra_Marketplace)
+
+FROM eclipse-temurin:21-jdk-alpine AS build
+WORKDIR /app
+COPY Samudra-backend/ ./
+RUN chmod +x gradlew && ./gradlew :samudra-core:bootJar -x test --no-daemon
+
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+RUN addgroup -S samudra && adduser -S samudra -G samudra
+USER samudra
+COPY --from=build /app/samudra-core/build/libs/samudra-core.jar /app/app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

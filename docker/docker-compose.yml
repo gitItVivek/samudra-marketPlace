@@ -1,0 +1,65 @@
+# Samudra Option A — EC2 + Docker Compose
+# Run from repo root:  docker compose -f docker/docker-compose.yml --env-file docker/.env up -d --build
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: samudra-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: samudra-marketPlace
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in docker/.env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d samudra-marketPlace']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - samudra
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    container_name: samudra-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: deploy
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/samudra-marketPlace
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SAMUDRA_JWT_SECRET: ${SAMUDRA_JWT_SECRET:?Set SAMUDRA_JWT_SECRET in docker/.env}
+      SAMUDRA_OAUTH_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
+      SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
+      SAMUDRA_CORS_ALLOWED_ORIGIN_PATTERNS: ${SAMUDRA_CORS_ALLOWED_ORIGIN_PATTERNS:-http://localhost:*,http://127.0.0.1:*}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - samudra
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+      args:
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:?Set VITE_GOOGLE_CLIENT_ID in docker/.env}
+        VITE_API_BASE_URL: ''
+    container_name: samudra-frontend
+    restart: unless-stopped
+    ports:
+      - '${HTTP_PORT:-80}:80'
+    depends_on:
+      - backend
+    networks:
+      - samudra
+
+volumes:
+  postgres_data:
+
+networks:
+  samudra:
+    driver: bridge
