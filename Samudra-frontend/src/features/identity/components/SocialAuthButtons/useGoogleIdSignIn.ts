@@ -1,29 +1,19 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const SCRIPT_ID = 'google-gsi-client';
-const HIDDEN_HOST_ID = 'google-gsi-hidden-host';
 
 /** One GSI init for the whole app — avoids "initialize() called multiple times". */
 let gsiInitialized = false;
-let buttonReadyPromise: Promise<void> | null = null;
 const credentialHandler = { current: (_token: string) => {} };
-
-function getOrCreateHiddenHost(): HTMLDivElement {
-    let host = document.getElementById(HIDDEN_HOST_ID) as HTMLDivElement | null;
-    if (!host) {
-        host = document.createElement('div');
-        host.id = HIDDEN_HOST_ID;
-        host.setAttribute('aria-hidden', 'true');
-        host.style.cssText =
-            'position:fixed;left:-9999px;top:0;width:320px;height:48px;overflow:hidden';
-        document.body.appendChild(host);
-    }
-    return host;
-}
 
 function loadGoogleScript(): Promise<void> {
     if (document.getElementById(SCRIPT_ID)) {
-        return Promise.resolve();
+        return typeof google !== 'undefined'
+            ? Promise.resolve()
+            : new Promise((resolve) => {
+                  const existing = document.getElementById(SCRIPT_ID);
+                  existing?.addEventListener('load', () => resolve(), { once: true });
+              });
     }
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
@@ -50,68 +40,54 @@ function initializeGoogleOnce(clientId: string) {
     gsiInitialized = true;
 }
 
-function findNativeGoogleButton(host: HTMLElement): HTMLElement | null {
-    return host.querySelector<HTMLElement>('[role="button"], div[tabindex="0"]');
+function renderGoogleButton(host: HTMLElement) {
+    const width = Math.max(host.parentElement?.getBoundingClientRect().width ?? 0, 200);
+    host.innerHTML = '';
+    google.accounts.id.renderButton(host, {
+        type: 'standard',
+        theme: 'outline',
+        size: 'large',
+        text: 'continue_with',
+        width: Math.round(width),
+    });
 }
 
-async function waitForNativeButton(host: HTMLElement, maxMs = 3000): Promise<HTMLElement> {
-    const start = Date.now();
-    while (Date.now() - start < maxMs) {
-        const btn = findNativeGoogleButton(host);
-        if (btn) return btn;
-        await new Promise((resolve) => setTimeout(resolve, 50));
-    }
-    throw new Error('Google button not ready');
-}
-
-function ensureGoogleButtonReady(clientId: string): Promise<void> {
-    if (!buttonReadyPromise) {
-        buttonReadyPromise = loadGoogleScript()
-            .then(() => {
-                initializeGoogleOnce(clientId);
-                const host = getOrCreateHiddenHost();
-                host.innerHTML = '';
-                google.accounts.id.renderButton(host, {
-                    type: 'standard',
-                    theme: 'outline',
-                    size: 'large',
-                    text: 'continue_with',
-                    width: 320,
-                });
-            })
-            .then(() => waitForNativeButton(getOrCreateHiddenHost()))
-            .then(() => {})
-            .catch((err) => {
-                buttonReadyPromise = null;
-                throw err;
-            });
-    }
-    return buttonReadyPromise;
-}
-
+/**
+ * Renders Google's native sign-in button in an invisible overlay on top of our custom UI.
+ * The user clicks Google's real control (not a synthetic .click()), which is reliable across browsers.
+ */
 export function useGoogleIdSignIn(onCredential: (idToken: string) => void) {
+    const googleHostRef = useRef<HTMLDivElement>(null);
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
 
     credentialHandler.current = onCredential;
 
     useEffect(() => {
-        if (!clientId) return;
-        void ensureGoogleButtonReady(clientId);
+        if (!clientId || !googleHostRef.current) return;
+
+        let cancelled = false;
+
+        const mountButton = async () => {
+            await loadGoogleScript();
+            if (cancelled || !googleHostRef.current) return;
+
+            initializeGoogleOnce(clientId);
+
+            // Wait one frame so the grid cell has a real width before renderButton.
+            requestAnimationFrame(() => {
+                if (cancelled || !googleHostRef.current) return;
+                renderGoogleButton(googleHostRef.current);
+            });
+        };
+
+        void mountButton().catch((err) => {
+            console.error('Google sign-in failed to initialize', err);
+        });
+
+        return () => {
+            cancelled = true;
+        };
     }, [clientId]);
 
-    const triggerGoogleSignIn = useCallback(async (): Promise<string | null> => {
-        if (!clientId) {
-            return 'Add VITE_GOOGLE_CLIENT_ID to .env and restart npm run dev.';
-        }
-        try {
-            await ensureGoogleButtonReady(clientId);
-            const nativeBtn = await waitForNativeButton(getOrCreateHiddenHost(), 500);
-            nativeBtn.click();
-            return null;
-        } catch {
-            return 'Could not load Google sign-in.';
-        }
-    }, [clientId]);
-
-    return { triggerGoogleSignIn };
+    return { googleHostRef, clientId };
 }

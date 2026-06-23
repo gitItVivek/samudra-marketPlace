@@ -13,15 +13,7 @@ export function SocialAuthButtons({
   disabled,
   onError,
 }: SocialAuthButtonsProps) {
-  const { triggerGoogleSignIn } = useGoogleIdSignIn(onGoogleCredential);
-
-  const handleGoogle = async () => {
-    if (disabled) return;
-    const error = await triggerGoogleSignIn();
-    if (error) {
-      onError?.(error);
-    }
-  };
+  const { googleHostRef } = useGoogleIdSignIn(onGoogleCredential);
 
   const handleFacebook = () => {
     if (disabled) return;
@@ -31,16 +23,24 @@ export function SocialAuthButtons({
   return (
     <div className={styles.wrap}>
       <div className={styles.row}>
-        <button
-          type="button"
-          className={styles.socialBtn}
-          onClick={() => void handleGoogle()}
-          disabled={disabled}
-          aria-label="Continue with Google"
-        >
-          <img src={SOCIAL_ICONS.google} alt="" className={styles.icon} />
-          <span>Google</span>
-        </button>
+        <div className={styles.googleBtnWrap}>
+          <button
+            type="button"
+            className={styles.socialBtn}
+            tabIndex={-1}
+            aria-hidden="true"
+            disabled
+          >
+            <img src={SOCIAL_ICONS.google} alt="" className={styles.icon} />
+            <span>Google</span>
+          </button>
+          <div
+            ref={googleHostRef}
+            className={styles.googleOverlay}
+            aria-label="Continue with Google"
+            data-disabled={disabled ? 'true' : 'false'}
+          />
+        </div>
         <button
           type="button"
           className={styles.socialBtn}

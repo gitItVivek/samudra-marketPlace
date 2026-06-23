@@ -4,6 +4,33 @@
   gap: var(--space-sm);
 }
 
+/* Visual-only Google button; real GIS control sits in .googleOverlay on top */
+.googleBtnWrap {
+  position: relative;
+  min-height: 48px;
+}
+
+.googleOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.01;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.googleOverlay[data-disabled='true'] {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.googleOverlay :global(iframe) {
+  margin: 0 !important;
+}
+
 .row {
   display: grid;
   grid-template-columns: 1fr 1fr;
