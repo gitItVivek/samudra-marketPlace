@@ -6,6 +6,7 @@ description = 'samudra-core'
 
 dependencies {
     implementation project(':samudra-common')
+    implementation project(':samudra-identity')
     implementation project(':samudra-listing')
     implementation project(':samudra-community')
     implementation project(':samudra-auction')

@@ -1,0 +1,79 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: var(--space-xl);
+  margin-right: auto;
+}
+
+.navLink {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: color 0.15s;
+}
+
+.navLink:hover {
+  color: var(--color-primary);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-left: auto;
+}
+
+.loginLink {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+}
+
+.loginLink:hover {
+  background: var(--color-bg);
+}
+
+.signUpLink {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
+  background: var(--color-primary);
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  transition: opacity 0.15s;
+}
+
+.signUpLink:hover {
+  opacity: 0.92;
+}
+
+@media (min-width: 768px) {
+  .nav {
+    display: flex;
+  }
+
+  .inner {
+    padding: var(--space-md) var(--space-2xl);
+  }
+}
+

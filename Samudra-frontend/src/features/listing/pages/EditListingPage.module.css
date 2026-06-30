@@ -1,0 +1,47 @@
+.form {
+  max-width: 560px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--space-lg);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.label {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.field input,
+.field textarea,
+.field select {
+  padding: var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.required {
+  color: #dc2626;
+}
+
+.hint {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: var(--space-md);
+}
+
+.muted {
+  color: var(--color-text-secondary);
+}
+
+.error {
+  color: #dc2626;
+  margin-bottom: var(--space-md);
+}

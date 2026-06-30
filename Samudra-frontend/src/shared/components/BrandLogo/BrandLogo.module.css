@@ -1,0 +1,67 @@
+.link {
+  display: inline-flex;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  flex-shrink: 0;
+  display: block;
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.name {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+.market {
+  font-family: var(--font-family);
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-top: 1px;
+}
+
+/* Sizes */
+.sm .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.sm .name {
+  font-size: 18px;
+}
+
+.md .icon {
+  width: 32px;
+  height: 32px;
+}
+
+.md .name {
+  font-size: 22px;
+}
+
+.lg .icon {
+  width: 40px;
+  height: 40px;
+}
+
+.lg .name {
+  font-size: 28px;
+}

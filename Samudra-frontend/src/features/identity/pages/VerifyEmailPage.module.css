@@ -1,0 +1,20 @@
+.iconWrap {
+  align-self: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.info {
+  font-size: 13px;
+  color: var(--color-verified);
+  text-align: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-new-bg);
+  border-radius: var(--radius-md);
+}

@@ -1,0 +1,96 @@
+.page {
+  min-height: 100%;
+  background: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+
+  /*
+   * Desktop auth layout tuning — change these to experiment:
+   * --auth-form-column     width of the right panel (login/signup)
+   * --auth-form-inner-max  max width of the form card inside that panel
+   * --auth-form-panel-px   horizontal padding inside the form panel
+   * --auth-marketing-px    padding on the left marketing panel
+   */
+  --auth-form-column: minmax(0, 1fr);
+  --auth-form-inner-max: 420px;
+  --auth-form-panel-px: var(--space-lg);
+  --auth-marketing-px: var(--space-lg);
+}
+
+.marketing {
+  display: none;
+}
+
+.formPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-xl) var(--auth-form-panel-px)
+    calc(var(--space-2xl) + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, var(--color-primary-light) 0%, var(--color-bg) 36%);
+}
+
+.mobileBrand {
+  margin-bottom: var(--space-lg);
+}
+
+.formInner {
+  width: 100%;
+  max-width: var(--auth-form-inner-max);
+  margin: 0 auto;
+}
+
+/* Desktop: marketing left, auth form on the right (wider panel, form expands left) */
+@media (min-width: 1024px) {
+  .page {
+    --auth-form-column: minmax(560px, 58vw);
+    --auth-form-inner-max: 100%;
+    --auth-form-panel-px: 40px 48px 40px 72px;
+    --auth-marketing-px: 48px 64px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--auth-form-column);
+    min-height: 100vh;
+  }
+
+  .marketing {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: var(--auth-marketing-px);
+    background: linear-gradient(145deg, var(--color-primary-light) 0%, #f0faf6 45%, var(--color-bg) 100%);
+    border-right: 1px solid var(--color-border);
+  }
+
+  .formPanel {
+    justify-content: center;
+    align-items: stretch;
+    padding: 48px var(--auth-form-panel-px);
+    background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg) 100%);
+  }
+
+  .mobileBrand {
+    display: none;
+  }
+
+  .formInner {
+    width: 100%;
+    max-width: var(--auth-form-inner-max);
+    margin: 0;
+    align-self: center;
+  }
+}
+
+@media (min-width: 1280px) {
+  .page {
+    --auth-form-column: minmax(620px, 62vw);
+    --auth-form-panel-px: 56px 64px 56px 88px;
+    --auth-marketing-px: 64px 80px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .page {
+    --auth-form-column: minmax(680px, 64vw);
+  }
+}

@@ -1,0 +1,38 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.used {
+  background: var(--color-used-bg);
+  color: var(--color-used);
+}
+
+.new {
+  background: var(--color-new-bg);
+  color: var(--color-new);
+}
+
+.boosted {
+  background: var(--color-boosted-bg);
+  color: var(--color-boosted);
+}
+
+.verified {
+  background: transparent;
+  color: var(--color-verified);
+  padding: 0;
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.default {
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+}
