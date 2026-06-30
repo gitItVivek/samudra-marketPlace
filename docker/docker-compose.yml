@@ -1,5 +1,8 @@
 # Samudra Option A — EC2 + Docker Compose
 # Run from repo root:  docker compose -f docker/docker-compose.yml --env-file docker/.env up -d --build
+#
+# API traffic (recommended): Browser / SPA → Kong :8000/v1/* → backend:8080
+# Optional direct backend: localhost:8080 (not exposed by default in this compose file)
 
 services:
   postgres:
@@ -20,6 +23,32 @@ services:
     networks:
       - samudra
 
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: samudra-kafka
+    restart: unless-stopped
+    environment:
+      CLUSTER_ID: samudra-local-kafka-01
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ['CMD-SHELL', 'kafka-broker-api-versions --bootstrap-server localhost:9092 || exit 1']
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - samudra
+
   backend:
     build:
       context: ..
@@ -35,9 +64,54 @@ services:
       SAMUDRA_OAUTH_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
       SAMUDRA_CORS_ALLOWED_ORIGIN_PATTERNS: ${SAMUDRA_CORS_ALLOWED_ORIGIN_PATTERNS:-http://localhost:*,http://127.0.0.1:*}
+      SAMUDRA_EVENTS_KAFKA_ENABLED: 'true'
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SAMUDRA_INTERNAL_API_TOKEN: ${SAMUDRA_INTERNAL_API_TOKEN:-samudra-internal-dev}
     depends_on:
       postgres:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - samudra
+
+  integration:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.integration
+    container_name: samudra-integration
+    restart: unless-stopped
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SAMUDRA_CORE_BASE_URL: http://backend:8080
+      SAMUDRA_INTERNAL_API_TOKEN: ${SAMUDRA_INTERNAL_API_TOKEN:-samudra-internal-dev}
+    depends_on:
+      kafka:
+        condition: service_healthy
+      backend:
+        condition: service_started
+    networks:
+      - samudra
+
+  kong:
+    image: kong:3.8
+    container_name: samudra-kong
+    restart: unless-stopped
+    environment:
+      KONG_DATABASE: 'off'
+      KONG_DECLARATIVE_CONFIG: /kong/kong.yml
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - '${KONG_PROXY_PORT:-8000}:8000'
+      - '${KONG_ADMIN_PORT:-8001}:8001'
+    volumes:
+      - ./kong/kong.yml:/kong/kong.yml:ro
+    depends_on:
+      - backend
     networks:
       - samudra
 
@@ -53,6 +127,7 @@ services:
     ports:
       - '${HTTP_PORT:-80}:80'
     depends_on:
+      - kong
       - backend
     networks:
       - samudra

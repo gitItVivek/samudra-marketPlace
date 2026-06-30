@@ -1,0 +1,79 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: samudra-core
+    url: http://backend:8080
+    connect_timeout: 60000
+    read_timeout: 60000
+    routes:
+      - name: v1-auth
+        paths:
+          - /v1/auth
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 30
+              policy: local
+              limit_by: ip
+      - name: v1-listings
+        paths:
+          - /v1/listings
+        strip_path: false
+      - name: v1-listing-bids
+        paths:
+          - ~/v1/listings/.+/bids
+        regex_priority: 10
+        strip_path: false
+        plugins:
+          - name: rate-limiting
+            config:
+              minute: 60
+              policy: local
+              limit_by: ip
+      - name: v1-search
+        paths:
+          - /v1/search
+        strip_path: false
+      - name: v1-communities
+        paths:
+          - /v1/communities
+        strip_path: false
+      - name: v1-users
+        paths:
+          - /v1/users
+        strip_path: false
+      - name: v1-actuator-health
+        paths:
+          - /actuator/health
+        strip_path: false
+    plugins:
+      - name: cors
+        config:
+          origins:
+            - http://localhost:5173
+            - http://127.0.0.1:5173
+            - http://localhost
+            - http://127.0.0.1
+            - https://samudra.digital
+          methods:
+            - GET
+            - POST
+            - PUT
+            - PATCH
+            - DELETE
+            - OPTIONS
+          headers:
+            - Authorization
+            - Content-Type
+            - X-Correlation-ID
+          exposed_headers:
+            - X-Correlation-ID
+          credentials: true
+          max_age: 3600
+      - name: correlation-id
+        config:
+          header_name: X-Correlation-ID
+          generator: uuid
+          echo_downstream: true

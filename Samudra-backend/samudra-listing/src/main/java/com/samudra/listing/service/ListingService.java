@@ -1,5 +1,9 @@
 package com.samudra.listing.service;
 
+import com.samudra.common.events.ListingCloseReason;
+import com.samudra.common.events.ListingClosedEvent;
+import com.samudra.common.events.ListingPublishedEvent;
+import com.samudra.common.events.MarketplaceEventPublisher;
 import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.ListingStatus;
 import com.samudra.common.enums.ListingType;
@@ -42,6 +46,7 @@ public class ListingService {
     private final ListingAttributeDal listingAttributeDal;
     private final CategoryService categoryService;
     private final ListingMapper listingMapper;
+    private final MarketplaceEventPublisher marketplaceEventPublisher;
 
     @Transactional
     public ListingDetailResponse create(UUID userId, CreateListingRequest request) {
@@ -77,6 +82,13 @@ public class ListingService {
         listing = listingDal.save(listing);
         List<ListingImage> images = saveImages(listing, request.imageUrls());
         saveCustomTag(listing, request.customTag());
+        marketplaceEventPublisher.onListingPublished(new ListingPublishedEvent(
+                listing.getId(),
+                userId,
+                saleType,
+                listing.getCity(),
+                request.categoryType(),
+                Instant.now()));
         return listingMapper.toDetail(listing, category, images);
     }
 
@@ -154,9 +166,13 @@ public class ListingService {
             listing.setPrice(request.price());
         }
         if (request.status() != null) {
+            ListingStatus previousStatus = listing.getStatus();
             listing.setStatus(request.status());
             if (request.status() == ListingStatus.SOLD) {
                 listing.setSoldAt(Instant.now());
+            }
+            if (request.status() == ListingStatus.SOLD && previousStatus != ListingStatus.SOLD) {
+                publishListingClosed(listing, ListingCloseReason.MANUAL_SOLD, listing.getCurrentBidId());
             }
         }
         listing = listingDal.save(listing);
@@ -247,5 +263,14 @@ public class ListingService {
             return Sort.by(Sort.Order.desc("price"));
         }
         return Sort.by(Sort.Order.desc("createdAt"));
+    }
+
+    private void publishListingClosed(Listing listing, ListingCloseReason reason, UUID winningBidId) {
+        marketplaceEventPublisher.onListingClosed(new ListingClosedEvent(
+                listing.getId(),
+                listing.getUserId(),
+                reason,
+                winningBidId,
+                Instant.now()));
     }
 }

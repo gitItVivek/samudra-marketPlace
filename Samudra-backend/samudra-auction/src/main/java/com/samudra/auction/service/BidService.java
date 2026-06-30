@@ -1,6 +1,8 @@
 package com.samudra.auction.service;
 
 import com.samudra.auction.entity.Bid;
+import com.samudra.common.events.BidPlacedEvent;
+import com.samudra.common.events.MarketplaceEventPublisher;
 import com.samudra.common.auction.request.PlaceBidRequest;
 import com.samudra.common.auction.response.AuctionAlertResponse;
 import com.samudra.common.auction.response.BidAnalyticsResponse;
@@ -34,6 +36,7 @@ public class BidService {
     private final BidDal bidDal;
     private final ListingDal listingDal;
     private final ListingService listingService;
+    private final MarketplaceEventPublisher marketplaceEventPublisher;
 
     @Transactional
     public BidResponse placeBid(UUID bidderId, UUID listingId, PlaceBidRequest request) {
@@ -58,6 +61,14 @@ public class BidService {
         listing.setCurrentBidAmount(request.amount());
         listing.setCurrentBidId(bid.getId());
         listingDal.save(listing);
+
+        marketplaceEventPublisher.onBidPlaced(new BidPlacedEvent(
+                listingId,
+                bid.getId(),
+                bidderId,
+                listing.getUserId(),
+                request.amount(),
+                bid.getCreatedAt()));
 
         return toResponse(bid);
     }
