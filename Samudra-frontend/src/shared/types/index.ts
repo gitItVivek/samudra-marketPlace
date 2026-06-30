@@ -15,6 +15,8 @@ export interface ListingSummary {
   negotiable?: boolean;
   icon: string;
   sellerId?: string;
+  coverImageUrl?: string | null;
+  status?: string;
 }
 
 export interface ListingDetail extends ListingSummary {

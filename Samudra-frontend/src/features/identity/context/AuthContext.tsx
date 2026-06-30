@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/app/paths';
+import { defaultListingsPath } from '@/shared/utils/defaultRoute';
 import * as authApi from '@/api/auth';
 import type { AuthResponse, UserSummary } from '@/shared/types/auth';
 
@@ -74,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         navigate(ROUTES.authVerifyEmail, { replace: true });
         return;
       }
-      navigate(ROUTES.home, { replace: true });
+      navigate(defaultListingsPath(), { replace: true });
     },
     [navigate, persistSession],
   );

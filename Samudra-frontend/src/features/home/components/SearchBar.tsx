@@ -1,5 +1,5 @@
 import { MapPin, Search } from 'lucide-react';
-import { LOCATION } from '@/features/home/mock';
+import { CityLocationInput } from '@/shared/components/CityLocationInput/CityLocationInput';
 import styles from './SearchBar.module.css';
 
 export function SearchBar() {
@@ -13,10 +13,10 @@ export function SearchBar() {
           className={styles.input}
           readOnly
         />
-        <button type="button" className={styles.location}>
+        <label className={styles.location}>
           <MapPin size={16} />
-          {LOCATION}
-        </button>
+          <CityLocationInput compact className={styles.locationInput} />
+        </label>
       </div>
     </div>
   );

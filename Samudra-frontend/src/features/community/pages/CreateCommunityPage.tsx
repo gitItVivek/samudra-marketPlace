@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapPin, Plus, X } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 import { PageShell } from '@/shared/layout/PageShell';
 import { Button } from '@/shared/components/Button/Button';
+import { createCommunity } from '@/api/communities';
+import { useAuth } from '@/features/identity/context/AuthContext';
+import { useBrowseFilters } from '@/shared/context/BrowseFiltersContext';
+import { uiCategoryToApiForCommunity } from '@/shared/constants/categoryMapping';
+import { parseCityState, slugify } from '@/shared/utils/location';
 import styles from './CreateCommunityPage.module.css';
 
 const CATEGORIES = [
@@ -16,39 +21,70 @@ const CATEGORIES = [
 
 export function CreateCommunityPage() {
   const navigate = useNavigate();
+  const { accessToken } = useAuth();
+  const { city, state } = useBrowseFilters();
+  const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
+  const [description, setDescription] = useState('');
   const [category, setCategory] = useState('property');
-  const [privacy, setPrivacy] = useState<'public' | 'private'>('public');
-  const [rules] = useState([
-    'Only post listings relevant to this community',
-    'Always mention price and locality clearly',
-  ]);
+  const [cityInput, setCityInput] = useState(`${city}, ${state}`);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleCreate = async () => {
+    if (!accessToken) {
+      navigate('/auth/login');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    const { city: c, state: s } = parseCityState(cityInput);
+    const finalSlug = slug.trim() || slugify(name);
+    try {
+      const created = await createCommunity(
+        {
+          name: name.trim(),
+          slug: finalSlug,
+          description: description.trim() || undefined,
+          categoryType: uiCategoryToApiForCommunity(category),
+          city: c,
+          state: s,
+        },
+        accessToken,
+      );
+      navigate(`/communities/${created.slug}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create community');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <PageShell title="Create community" onBack={() => navigate('/communities')}>
-      <div className={styles.cover}>
-        <span>Add cover image (optional)</span>
-      </div>
-
       <label className={styles.field}>
         Community name <span className={styles.req}>*</span>
-        <input type="text" defaultValue="Flats & Flatmates Bangalore" />
-        <span className={styles.hint}>Be specific — a clear name gets more members</span>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (!slug) setSlug(slugify(e.target.value));
+          }}
+        />
       </label>
 
       <label className={styles.field}>
         URL slug
         <div className={styles.slug}>
           <span>samudra.in/c/</span>
-          <input type="text" defaultValue="flats-flatmates-bangalore" />
+          <input type="text" value={slug} onChange={(e) => setSlug(e.target.value)} />
         </div>
       </label>
 
       <label className={styles.field}>
         Description
-        <textarea
-          rows={3}
-          defaultValue="Find roommates, PGs and rental flats across Bangalore."
-        />
+        <textarea rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
       </label>
 
       <div className={styles.field}>
@@ -74,52 +110,14 @@ export function CreateCommunityPage() {
         City <span className={styles.req}>*</span>
         <div className={styles.cityInput}>
           <MapPin size={18} />
-          <input type="text" defaultValue="Bengaluru, Karnataka" />
+          <input type="text" value={cityInput} onChange={(e) => setCityInput(e.target.value)} />
         </div>
       </label>
 
-      <div className={styles.field}>
-        <span className={styles.label}>Privacy</span>
-        <button
-          type="button"
-          className={`${styles.privacyCard} ${privacy === 'public' ? styles.privacyActive : ''}`}
-          onClick={() => setPrivacy('public')}
-        >
-          <strong>Public</strong>
-          <span>Anyone can find, join and see listings</span>
-        </button>
-        <button
-          type="button"
-          className={`${styles.privacyCard} ${privacy === 'private' ? styles.privacyActive : ''}`}
-          onClick={() => setPrivacy('private')}
-        >
-          <strong>Private</strong>
-          <span>Members must request to join · you approve</span>
-        </button>
-      </div>
+      {error && <p>{error}</p>}
 
-      <div className={styles.field}>
-        <span className={styles.label}>Community rules (optional)</span>
-        <ul className={styles.rulesList}>
-          {rules.map((rule, i) => (
-            <li key={i}>
-              {rule}
-              <button type="button" aria-label="Remove rule">
-                <X size={16} />
-              </button>
-            </li>
-          ))}
-        </ul>
-        <div className={styles.addRule}>
-          <input type="text" placeholder="Add a rule..." />
-          <button type="button" aria-label="Add">
-            <Plus size={20} />
-          </button>
-        </div>
-      </div>
-
-      <Button variant="primary" fullWidth onClick={() => navigate('/communities')}>
-        Create community
+      <Button variant="primary" fullWidth onClick={handleCreate} disabled={submitting || !name.trim()}>
+        {submitting ? 'Creating…' : 'Create community'}
       </Button>
     </PageShell>
   );

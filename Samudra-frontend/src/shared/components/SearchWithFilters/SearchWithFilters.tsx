@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { MapPin, Search, SlidersHorizontal, X } from 'lucide-react';
+import { CityLocationInput } from '@/shared/components/CityLocationInput/CityLocationInput';
 import { ListingFilters } from '@/shared/components/ListingFilters/ListingFilters';
 import { Button } from '@/shared/components/Button/Button';
+import { useBrowseFilters } from '@/shared/context/BrowseFiltersContext';
 import {
   defaultListingFilters,
   type ListingFiltersState,
@@ -15,7 +17,6 @@ interface SearchWithFiltersProps {
 
 function countActiveFilters(filters: ListingFiltersState): number {
   return (
-    (filters.location.trim() ? 1 : 0) +
     (filters.priceMin || filters.priceMax ? 1 : 0) +
     (filters.conditions.length > 0 ? 1 : 0) +
     (filters.dateListed !== 'all' ? 1 : 0) +
@@ -29,13 +30,13 @@ export function SearchWithFilters({
   placeholder = 'Search cars, mobiles, furniture...',
   showLocation = true,
 }: SearchWithFiltersProps) {
-  const [query, setQuery] = useState('');
+  const { setQuery } = useBrowseFilters();
+  const [query, setLocalQuery] = useState('');
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<ListingFiltersState>(defaultListingFilters);
   const [draftFilters, setDraftFilters] = useState<ListingFiltersState>(defaultListingFilters);
 
   const activeFilterCount = countActiveFilters(appliedFilters);
-  const displayLocation = filtersOpen ? draftFilters.location : appliedFilters.location;
 
   const openFilters = () => {
     setDraftFilters(appliedFilters);
@@ -52,12 +53,8 @@ export function SearchWithFilters({
     setFiltersOpen(false);
   };
 
-  const updateLocation = (location: string) => {
-    if (filtersOpen) {
-      setDraftFilters((prev) => ({ ...prev, location }));
-      return;
-    }
-    setAppliedFilters((prev) => ({ ...prev, location }));
+  const submitSearch = () => {
+    setQuery(query.trim());
   };
 
   return (
@@ -70,19 +67,14 @@ export function SearchWithFilters({
             placeholder={placeholder}
             className={styles.input}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => setLocalQuery(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && submitSearch()}
+            onBlur={submitSearch}
           />
           {showLocation && (
             <label className={styles.locationField}>
               <MapPin size={16} className={styles.locationIcon} />
-              <input
-                type="text"
-                className={styles.locationInput}
-                placeholder="City or locality"
-                value={displayLocation}
-                onChange={(e) => updateLocation(e.target.value)}
-                aria-label="Location"
-              />
+              <CityLocationInput compact />
             </label>
           )}
           <button
@@ -120,6 +112,7 @@ export function SearchWithFilters({
                 filters={draftFilters}
                 onChange={setDraftFilters}
                 hideTitle
+                showBrowseLocation
               />
             </div>
             <div className={styles.filtersFooter}>

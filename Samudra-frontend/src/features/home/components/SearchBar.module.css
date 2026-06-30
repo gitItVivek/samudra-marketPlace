@@ -65,3 +65,9 @@
   font-size: 13px;
   white-space: nowrap;
 }
+
+.locationInput {
+  min-width: 6rem;
+  width: auto;
+  max-width: 10rem;
+}

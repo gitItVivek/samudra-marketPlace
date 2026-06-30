@@ -236,6 +236,81 @@
   margin-bottom: var(--space-md);
 }
 
+.setupCard {
+  padding: var(--space-lg);
+  background: var(--color-bg);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-xl);
+}
+
+.setupCard h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+}
+
+.setupForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  max-width: 480px;
+}
+
+.setupForm h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.field input,
+.field textarea {
+  font-weight: 400;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.formActions {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.error {
+  color: #dc2626;
+  font-size: 14px;
+}
+
+.editRow {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--space-md);
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.avatarImg {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  margin: 0 auto var(--space-sm);
+}
+
 .desktopActions {
   display: none;
 }

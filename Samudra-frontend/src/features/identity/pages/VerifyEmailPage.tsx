@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { ROUTES } from '@/app/paths';
+import { defaultListingsPath } from '@/shared/utils/defaultRoute';
 import { MailCheck } from 'lucide-react';
 import * as authApi from '@/api/auth';
 import { AuthCard } from '@/features/identity/components/AuthCard/AuthCard';
@@ -33,7 +34,7 @@ export function VerifyEmailPage() {
   }
 
   if (user.isVerified) {
-    return <Navigate to={ROUTES.home} replace />;
+    return <Navigate to={defaultListingsPath()} replace />;
   }
 
   const sendCode = async () => {
@@ -63,7 +64,7 @@ export function VerifyEmailPage() {
       refreshUser({ isVerified: status.isVerified });
       setInfo('Email verified! Redirecting…');
       window.setTimeout(() => {
-        window.location.assign(ROUTES.home);
+        window.location.assign(defaultListingsPath());
       }, 800);
     } catch (err) {
       setError(getAuthErrorMessage(err, 'Could not verify code.'));
@@ -77,7 +78,7 @@ export function VerifyEmailPage() {
       title="Verify your email"
       subtitle={`We sent a 6-digit code to ${user.email}`}
       footer={
-        <Link to={ROUTES.home}>Skip for now — browse as guest</Link>
+        <Link to={defaultListingsPath()}>Skip for now — browse listings</Link>
       }
     >
       <div className={styles.iconWrap}>

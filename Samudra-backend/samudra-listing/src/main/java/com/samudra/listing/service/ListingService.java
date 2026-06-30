@@ -9,10 +9,12 @@ import com.samudra.common.listing.request.UpdateListingRequest;
 import com.samudra.common.listing.response.ListingDetailResponse;
 import com.samudra.common.listing.response.ListingSummaryResponse;
 import com.samudra.common.response.PagedResponse;
+import com.samudra.listing.dal.ListingAttributeDal;
 import com.samudra.listing.dal.ListingDal;
 import com.samudra.listing.dal.ListingImageDal;
 import com.samudra.listing.entity.Category;
 import com.samudra.listing.entity.Listing;
+import com.samudra.listing.entity.ListingAttribute;
 import com.samudra.listing.entity.ListingImage;
 import com.samudra.listing.exception.InvalidListingStateException;
 import com.samudra.listing.exception.ListingForbiddenException;
@@ -37,6 +39,7 @@ public class ListingService {
 
     private final ListingDal listingDal;
     private final ListingImageDal listingImageDal;
+    private final ListingAttributeDal listingAttributeDal;
     private final CategoryService categoryService;
     private final ListingMapper listingMapper;
 
@@ -73,6 +76,7 @@ public class ListingService {
 
         listing = listingDal.save(listing);
         List<ListingImage> images = saveImages(listing, request.imageUrls());
+        saveCustomTag(listing, request.customTag());
         return listingMapper.toDetail(listing, category, images);
     }
 
@@ -197,9 +201,26 @@ public class ListingService {
             if (!request.auctionEndsAt().isAfter(Instant.now())) {
                 throw new InvalidListingStateException("auctionEndsAt must be in the future");
             }
-        } else if (request.price() == null && request.listingType() != com.samudra.common.enums.ListingType.FREE) {
-            throw new InvalidListingStateException("Fixed price listings require a price (unless listing type is FREE)");
+        } else if (request.price() == null
+                && request.listingType() != com.samudra.common.enums.ListingType.FREE
+                && request.listingType() != com.samudra.common.enums.ListingType.BUY
+                && request.listingType() != com.samudra.common.enums.ListingType.RENT_WANTED) {
+            throw new InvalidListingStateException(
+                    "Fixed price listings require a price (unless listing type is FREE, BUY, or RENT_WANTED)");
         }
+    }
+
+    private void saveCustomTag(Listing listing, String customTag) {
+        if (customTag == null || customTag.isBlank()) {
+            return;
+        }
+        listingAttributeDal.save(ListingAttribute.builder()
+                .listing(listing)
+                .attributeKey("custom_tag")
+                .attributeValue(customTag.trim())
+                .displayLabel("Tag")
+                .displayOrder(0)
+                .build());
     }
 
     private List<ListingImage> saveImages(Listing listing, List<String> imageUrls) {

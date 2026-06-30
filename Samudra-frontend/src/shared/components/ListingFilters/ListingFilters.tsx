@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, MapPin } from 'lucide-react';import type { ListingFiltersState } from '@/shared/types/filters';
+import { ChevronDown, ChevronUp, MapPin } from 'lucide-react';
+import { CityLocationInput } from '@/shared/components/CityLocationInput/CityLocationInput';
+import type { ListingFiltersState } from '@/shared/types/filters';
 import styles from './ListingFilters.module.css';
 
 interface ListingFiltersProps {
@@ -8,6 +10,8 @@ interface ListingFiltersProps {
   compact?: boolean;
   sidebar?: boolean;
   hideTitle?: boolean;
+  /** When true, location field sets global browse city (not a dead filter field). */
+  showBrowseLocation?: boolean;
 }
 
 const SORT_OPTIONS: { value: ListingFiltersState['sort']; label: string }[] = [
@@ -27,7 +31,7 @@ const DATE_OPTIONS: { value: ListingFiltersState['dateListed']; label: string }[
   { value: '30d', label: 'Last 30 days' },
 ];
 
-export function ListingFilters({ filters, onChange, compact, sidebar, hideTitle }: ListingFiltersProps) {
+export function ListingFilters({ filters, onChange, compact, sidebar, hideTitle, showBrowseLocation }: ListingFiltersProps) {
   const [openSections, setOpenSections] = useState({
     condition: false,
     date: false,
@@ -53,17 +57,23 @@ export function ListingFilters({ filters, onChange, compact, sidebar, hideTitle 
       <div className={styles.locationField}>
         <label className={styles.locationLabel} htmlFor={sidebar ? 'sidebar-location' : 'filter-location'}>
           <MapPin size={14} />
-          Location
+          Current city
         </label>
-        <input
-          id={sidebar ? 'sidebar-location' : 'filter-location'}
-          type="text"
-          className={styles.locationInput}
-          placeholder="City, area, or locality"
-          value={filters.location}
-          onChange={(e) => onChange({ ...filters, location: e.target.value })}
-        />
-        <span className={styles.locationHint}>Within 25 km</span>
+        {showBrowseLocation ? (
+          <CityLocationInput placeholder="City or City, State" bordered />
+        ) : (
+          <input
+            id={sidebar ? 'sidebar-location' : 'filter-location'}
+            type="text"
+            className={styles.locationInput}
+            placeholder="City, area, or locality"
+            value={filters.location}
+            onChange={(e) => onChange({ ...filters, location: e.target.value })}
+          />
+        )}
+        <span className={styles.locationHint}>
+          {showBrowseLocation ? 'Updates listings feed and URL' : 'Within 25 km'}
+        </span>
       </div>
 
       <div className={styles.field}>

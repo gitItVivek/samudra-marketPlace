@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom';
 import { AuthMarketingPanel } from '@/features/identity/components/AuthMarketingPanel/AuthMarketingPanel';
+import { AuthGuestOnly } from '@/features/identity/components/AuthGuestOnly/AuthGuestOnly';
 import styles from './AuthLayout.module.css';
 
 export function AuthLayout() {
@@ -13,7 +13,7 @@ export function AuthLayout() {
           <AuthMarketingPanel compact />
         </div>
         <div className={styles.formInner}>
-          <Outlet />
+          <AuthGuestOnly />
         </div>
       </div>
     </div>

@@ -84,6 +84,19 @@ export function ProfileMenu() {
                   Your listings
                 </Link>
               </li>
+              {user && (
+                <li>
+                  <Link
+                    to={`/profiles/${user.id}`}
+                    className={styles.menuItem}
+                    role="menuitem"
+                    onClick={close}
+                  >
+                    <User size={18} />
+                    Public profile
+                  </Link>
+                </li>
+              )}
               <li>
                 <Link
                   to="/me/notifications"

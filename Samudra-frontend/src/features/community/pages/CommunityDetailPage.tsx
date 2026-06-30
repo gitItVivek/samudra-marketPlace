@@ -1,19 +1,73 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Clock, MapPin, Search, Share2 } from 'lucide-react';
 import { Button } from '@/shared/components/Button/Button';
 import { formatPrice } from '@/shared/utils/format';
-import { getCommunityDetail } from '@/features/community/mock';
+import {
+  getCommunityBySlug,
+  getCommunityListings,
+  joinCommunity,
+} from '@/api/communities';
+import { listingDtoToCommunityPost, mapCommunityDetail } from '@/shared/utils/mappers';
+import { useAuth } from '@/features/identity/context/AuthContext';
+import type { CommunityDetail } from '@/shared/types/community';
 import styles from './CommunityDetailPage.module.css';
 
 type Tab = 'listings' | 'members' | 'rules';
 
 export function CommunityDetailPage() {
-  const { communityId } = useParams();
+  const { communityId: slug } = useParams();
   const navigate = useNavigate();
-  const community = getCommunityDetail(communityId ?? 'flats-flatmates-blr');
-  const [joined, setJoined] = useState(community.joined ?? false);
+  const { accessToken } = useAuth();
+  const [community, setCommunity] = useState<CommunityDetail | null>(null);
+  const [communityUuid, setCommunityUuid] = useState<string | null>(null);
+  const [joined, setJoined] = useState(false);
   const [tab, setTab] = useState<Tab>('listings');
+  const [error, setError] = useState<string | null>(null);
+  const [joining, setJoining] = useState(false);
+
+  useEffect(() => {
+    if (!slug) return;
+    let cancelled = false;
+    getCommunityBySlug(slug)
+      .then(async (detail) => {
+        if (cancelled) return;
+        setCommunityUuid(detail.id);
+        const listingsPage = await getCommunityListings(detail.id);
+        const posts = listingsPage.items.map((l) => listingDtoToCommunityPost(l, detail.id));
+        setCommunity(mapCommunityDetail(detail, posts));
+      })
+      .catch((err: Error) => {
+        if (!cancelled) setError(err.message);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  const handleJoin = async () => {
+    if (!accessToken || !communityUuid) {
+      navigate('/auth/login');
+      return;
+    }
+    setJoining(true);
+    try {
+      await joinCommunity(communityUuid, accessToken);
+      setJoined(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not join');
+    } finally {
+      setJoining(false);
+    }
+  };
+
+  if (error) {
+    return <div className={styles.page}>{error}</div>;
+  }
+
+  if (!community) {
+    return <div className={styles.page}>Loading community…</div>;
+  }
 
   return (
     <div className={styles.page}>
@@ -34,29 +88,24 @@ export function CommunityDetailPage() {
 
       <div className={styles.banner}>
         <span className={styles.bannerIcon}>{community.icon}</span>
-        <span className={styles.badge}>
-          {community.privacy === 'private' ? 'Private' : 'Public'}
-        </span>
+        <span className={styles.badge}>{community.privacy === 'private' ? 'Private' : 'Public'}</span>
       </div>
 
       <div className={styles.info}>
         <h1>{community.name}</h1>
         <p className={styles.about}>{community.about}</p>
         <p className={styles.stats}>
-          {(community.memberCount / 1000).toFixed(1)}k members · {community.listingCount}{' '}
-          listings
-          {community.since && ` · Since ${community.since}`}
+          {community.memberCount} members · {community.listingCount} listings
         </p>
-        {community.category && (
-          <span className={styles.categoryTag}>{community.category}</span>
-        )}
+        {community.category && <span className={styles.categoryTag}>{community.category}</span>}
         <div className={styles.actions}>
           <Button
             variant={joined ? 'secondary' : 'primary'}
             fullWidth
-            onClick={() => setJoined(!joined)}
+            onClick={handleJoin}
+            disabled={joining || joined}
           >
-            {joined ? '✓ Joined' : 'Join'}
+            {joined ? '✓ Joined' : joining ? 'Joining…' : 'Join'}
           </Button>
         </div>
       </div>
@@ -87,19 +136,14 @@ export function CommunityDetailPage() {
 
       {tab === 'listings' && (
         <ul className={styles.listings}>
+          {community.posts.length === 0 && <li>No listings in this community yet.</li>}
           {community.posts.map((post) => (
             <li key={post.id}>
-              <Link
-                to={`/listings/${post.listingId ?? 'iphone-12'}`}
-                className={styles.listingRow}
-              >
+              <Link to={`/listings/${post.listingId}`} className={styles.listingRow}>
                 <span className={styles.listingIcon}>{post.icon}</span>
                 <div className={styles.listingBody}>
                   {post.price != null && (
-                    <span className={styles.listingPrice}>
-                      {formatPrice(post.price)}
-                      {post.tag === 'Rent' ? '/mo' : ''}
-                    </span>
+                    <span className={styles.listingPrice}>{formatPrice(post.price)}</span>
                   )}
                   <h3>{post.title}</h3>
                   <p className={styles.excerpt}>{post.excerpt}</p>
@@ -114,12 +158,6 @@ export function CommunityDetailPage() {
                       <Clock size={12} />
                       {post.postedAgo}
                     </span>
-                    {post.tag && <span className={styles.tag}>{post.tag}</span>}
-                  </div>
-                  <div className={styles.poster}>
-                    <span className={styles.posterAvatar}>{post.authorInitials ?? '?'}</span>
-                    <span>{post.authorName}</span>
-                    {post.postedAt && <span className={styles.postedAt}>{post.postedAt}</span>}
                   </div>
                 </div>
               </Link>
@@ -130,8 +168,7 @@ export function CommunityDetailPage() {
 
       {tab === 'members' && (
         <p className={styles.placeholder}>
-          Member directory will load from the API. {(community.memberCount / 1000).toFixed(1)}k
-          members in this community.
+          Member directory API is available at GET /v1/communities/&#123;id&#125;/members (member-only).
         </p>
       )}
 
@@ -139,7 +176,6 @@ export function CommunityDetailPage() {
         <ul className={styles.rules}>
           <li>Only post listings relevant to this community.</li>
           <li>Always mention price and locality clearly.</li>
-          <li>No advance payments outside Samudra chat.</li>
         </ul>
       )}
 

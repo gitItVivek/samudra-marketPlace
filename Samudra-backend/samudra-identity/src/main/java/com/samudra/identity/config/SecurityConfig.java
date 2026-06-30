@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,16 +54,28 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf((csrf) -> csrf.disable())
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType("application/json");
+                            response.getWriter().write(
+                                    "{\"status\":401,\"code\":\"UNAUTHORIZED\",\"message\":\"Authentication required\"}");
+                        }))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/v1/auth/register",
                                 "/v1/auth/login",
                                 "/v1/auth/oauth/google").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/listings/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/communities/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/v1/search/listings").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/v1/listings",
+                                "/v1/listings/**",
+                                "/v1/search/**",
+                                "/v1/communities",
+                                "/v1/communities/**",
+                                "/v1/users/*/marketplace-profile").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -29,7 +29,8 @@ public record CreateListingRequest(
         @Size(max = 100) String locality,
         BigDecimal latitude,
         BigDecimal longitude,
-        List<@NotBlank @Size(max = 500) String> imageUrls
+        List<@NotBlank @Size(max = 500) String> imageUrls,
+        @Size(max = 100) String customTag
 ) {
     public SaleType resolvedSaleType() {
         return saleType != null ? saleType : SaleType.FIXED_PRICE;

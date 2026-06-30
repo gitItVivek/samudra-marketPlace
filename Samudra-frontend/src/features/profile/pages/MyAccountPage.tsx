@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ROUTES } from '@/app/paths';
+import { publicProfilePath, ROUTES } from '@/app/paths';
 import { LogOut, MailWarning, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/features/identity/context/AuthContext';
 import { Avatar } from '@/shared/components/Avatar/Avatar';
@@ -38,9 +38,6 @@ export function MyAccountPage() {
               Sign in or register
             </Button>
           </Link>
-          <Link to="/profiles/rahul-k" className={styles.sampleLink}>
-            View sample seller profile
-          </Link>
         </div>
       </div>
     );
@@ -76,8 +73,8 @@ export function MyAccountPage() {
         <Link to="/chats" className={styles.rowLink}>
           Messages
         </Link>
-        <Link to="/profiles/rahul-k" className={styles.rowLink}>
-          View public profile preview
+        <Link to={publicProfilePath(user.id)} className={styles.rowLink}>
+          Your public marketplace profile
         </Link>
       </div>
 

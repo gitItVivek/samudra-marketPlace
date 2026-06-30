@@ -2,6 +2,7 @@ export type CommunityPrivacy = 'public' | 'private';
 
 export interface CommunitySummary {
   id: string;
+  slug: string;
   name: string;
   description: string;
   memberCount: number;

@@ -1,35 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Plus, Search } from 'lucide-react';
 import { Button } from '@/shared/components/Button/Button';
-import {
-  communityFilterChips,
-  popularCommunities,
-  yourCommunities,
-} from '@/features/community/mock';
+import { searchCommunities } from '@/api/communities';
+import { mapCommunitySummary } from '@/shared/utils/mappers';
+import { useBrowseFilters } from '@/shared/context/BrowseFiltersContext';
+import type { CommunitySummary } from '@/shared/types/community';
 import styles from './CommunitiesPage.module.css';
 
+const FILTER_CHIPS = ['All', 'Electronics', 'Property', 'Services', 'Vehicles'];
+
 export function CommunitiesPage() {
-  const [query, setQuery] = useState('');
+  const { city } = useBrowseFilters();
+  const [localQuery, setLocalQuery] = useState('');
   const [activeChip, setActiveChip] = useState('All');
-  const [joined, setJoined] = useState<Record<string, boolean>>({
-    'flats-flatmates-blr': true,
-    'used-phones-blr': true,
-  });
+  const [communities, setCommunities] = useState<CommunitySummary[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filterList = (list: typeof yourCommunities) =>
-    list.filter(
-      (c) =>
-        (query === '' ||
-          c.name.toLowerCase().includes(query.toLowerCase()) ||
-          c.description.toLowerCase().includes(query.toLowerCase())) &&
-        (activeChip === 'All' ||
-          c.location?.includes(activeChip) ||
-          c.category === activeChip),
-    );
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    searchCommunities({
+      city,
+      q: localQuery || undefined,
+      page: 0,
+      size: 40,
+    })
+      .then((page) => {
+        if (!cancelled) setCommunities(page.items.map(mapCommunitySummary));
+      })
+      .catch((err: Error) => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [city, localQuery]);
 
-  const yours = filterList(yourCommunities);
-  const popular = filterList(popularCommunities);
+  const filtered = communities.filter(
+    (c) =>
+      activeChip === 'All' ||
+      c.category?.toLowerCase().includes(activeChip.toLowerCase()) ||
+      c.location?.toLowerCase().includes(activeChip.toLowerCase()),
+  );
 
   return (
     <div className={styles.page}>
@@ -46,13 +63,15 @@ export function CommunitiesPage() {
         <input
           type="search"
           placeholder="Search communities..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={localQuery}
+          onChange={(e) => setLocalQuery(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && setLocalQuery(localQuery)}
+          onBlur={() => setLocalQuery(localQuery)}
         />
       </div>
 
       <div className={styles.chips}>
-        {communityFilterChips.map((chip) => (
+        {FILTER_CHIPS.map((chip) => (
           <button
             key={chip}
             type="button"
@@ -64,56 +83,33 @@ export function CommunitiesPage() {
         ))}
       </div>
 
-      <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <h2>Your communities</h2>
-          <Link to="/communities">See all</Link>
-        </div>
-        <div className={styles.cardGrid}>
-          {yours.map((c) => (
-            <Link key={c.id} to={`/communities/${c.id}`} className={styles.joinedCard}>
-              <span className={styles.privacy}>{c.privacy === 'public' ? 'Public' : 'Private'}</span>
-              <span className={styles.cardIcon}>{c.icon}</span>
-              <h3>{c.name}</h3>
-              <p>{c.description}</p>
-              <span className={styles.members}>
-                {(c.memberCount / 1000).toFixed(1)}k members
-              </span>
-              <span className={styles.joinedBadge}>Joined</span>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {error && <p>{error}</p>}
+      {loading && <p>Loading communities…</p>}
 
       <section className={styles.section}>
         <div className={styles.sectionHead}>
-          <h2>Popular near Bengaluru</h2>
-          <Link to="/communities">See all</Link>
+          <h2>Communities in {city}</h2>
         </div>
+        {!loading && filtered.length === 0 && (
+          <p>No communities found. Create one to get started.</p>
+        )}
         <ul className={styles.list}>
-          {popular.map((c) => {
-            const isJoined = joined[c.id];
-            return (
-              <li key={c.id} className={styles.listItem}>
-                <Link to={`/communities/${c.id}`} className={styles.listMain}>
-                  <span className={styles.listIcon}>{c.icon}</span>
-                  <div>
-                    <h3>{c.name}</h3>
-                    <p className={styles.listMeta}>
-                      {(c.memberCount / 1000).toFixed(1)}k members · {c.listingCount} listings ·{' '}
-                      {c.privacy === 'private' ? 'Private' : 'Public'}
-                    </p>
-                  </div>
-                </Link>
-                <Button
-                  variant={isJoined ? 'secondary' : 'primary'}
-                  onClick={() => setJoined((prev) => ({ ...prev, [c.id]: !prev[c.id] }))}
-                >
-                  {isJoined ? 'Joined' : 'Join'}
-                </Button>
-              </li>
-            );
-          })}
+          {filtered.map((c) => (
+            <li key={c.id} className={styles.listItem}>
+              <Link to={`/communities/${c.slug}`} className={styles.listMain}>
+                <span className={styles.listIcon}>{c.icon}</span>
+                <div>
+                  <h3>{c.name}</h3>
+                  <p className={styles.listMeta}>
+                    {c.memberCount} members · {c.listingCount} listings · {c.location}
+                  </p>
+                </div>
+              </Link>
+              <Button variant="secondary" onClick={() => {}}>
+                View
+              </Button>
+            </li>
+          ))}
         </ul>
       </section>
     </div>

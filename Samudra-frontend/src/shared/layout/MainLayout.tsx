@@ -3,14 +3,19 @@ import { BottomNav } from '@/shared/components/BottomNav/BottomNav';
 import { DesktopNav } from '@/shared/components/DesktopNav/DesktopNav';
 import styles from './MainLayout.module.css';
 
-const NAV_ROUTES = ['/home', '/browse', '/me'];
+function isListingsFeed(pathname: string) {
+  return /\/[^/]+\/listings$/.test(pathname);
+}
 
 export function MainLayout() {
   const { pathname } = useLocation();
   const isChatThread = pathname.startsWith('/chats/') && pathname !== '/chats';
   const showBottomNav =
     !isChatThread &&
-    (NAV_ROUTES.includes(pathname) ||
+    (isListingsFeed(pathname) ||
+      pathname === '/browse' ||
+      pathname === '/home' ||
+      pathname === '/me' ||
       pathname === '/communities' ||
       (pathname.startsWith('/communities/') && !pathname.includes('/create')) ||
       pathname === '/chats');

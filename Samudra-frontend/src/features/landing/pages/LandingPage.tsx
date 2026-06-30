@@ -11,6 +11,8 @@ import {
   Wrench,
 } from 'lucide-react';
 import { ROUTES } from '@/app/paths';
+import { useAuth } from '@/features/identity/context/AuthContext';
+import { defaultListingsPath } from '@/shared/utils/defaultRoute';
 import { useTypewriter } from '@/features/landing/hooks/useTypewriter';
 import { LandingHeader } from '@/features/landing/components/LandingHeader/LandingHeader';
 import { Button } from '@/shared/components/Button/Button';
@@ -130,6 +132,7 @@ const HOW_STEPS = [
 
 export function LandingPage() {
   const typewriterText = useTypewriter(TYPEWRITER_PHRASES);
+  const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <div className={styles.page}>
@@ -153,13 +156,22 @@ export function LandingPage() {
           </p>
 
           <div className={styles.heroCtas}>
-            <Link to={ROUTES.authRegister}>
-              <Button variant="primary" className={styles.heroPrimaryBtn}>
-                Get started — it&apos;s free
-                <ArrowRight size={18} />
-              </Button>
-            </Link>
-            <Link to={ROUTES.home}>
+            {!isLoading && isAuthenticated ? (
+              <Link to={defaultListingsPath()}>
+                <Button variant="primary" className={styles.heroPrimaryBtn}>
+                  Go to your listings feed
+                  <ArrowRight size={18} />
+                </Button>
+              </Link>
+            ) : (
+              <Link to={ROUTES.authRegister}>
+                <Button variant="primary" className={styles.heroPrimaryBtn}>
+                  Get started — it&apos;s free
+                  <ArrowRight size={18} />
+                </Button>
+              </Link>
+            )}
+            <Link to={isAuthenticated ? defaultListingsPath() : ROUTES.home}>
               <Button variant="outline" className={styles.heroSecondaryBtn}>
                 Browse listings
               </Button>
@@ -359,9 +371,13 @@ export function LandingPage() {
         </Link>
         <p className={styles.footerTagline}>Marketplace for metros &amp; tier-2 India</p>
         <div className={styles.footerLinks}>
-          <Link to={ROUTES.home}>Browse</Link>
-          <Link to={ROUTES.authLogin}>Log in</Link>
-          <Link to={ROUTES.authRegister}>Sign up</Link>
+          <Link to={defaultListingsPath()}>Browse</Link>
+          {!isLoading && !isAuthenticated && (
+            <>
+              <Link to={ROUTES.authLogin}>Log in</Link>
+              <Link to={ROUTES.authRegister}>Sign up</Link>
+            </>
+          )}
         </div>
         <p className={styles.footerCopy}>© {new Date().getFullYear()} Samudra Market</p>
       </footer>

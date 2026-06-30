@@ -6,8 +6,9 @@ import { AuthWelcomePage } from '@/features/identity/pages/AuthWelcomePage';
 import { LoginPage } from '@/features/identity/pages/LoginPage';
 import { RegisterPage } from '@/features/identity/pages/RegisterPage';
 import { VerifyEmailPage } from '@/features/identity/pages/VerifyEmailPage';
-import { HomePage } from '@/features/home/pages/HomePage';
+import { CityListingsPage, HomeRedirectPage } from '@/features/home/pages/CityListingsPage';
 import { ListingDetailPage } from '@/features/listing/pages/ListingDetailPage';
+import { EditListingPage } from '@/features/listing/pages/EditListingPage';
 import { PostListingPage } from '@/features/listing/pages/PostListingPage';
 import { ChatPage } from '@/features/messaging/pages/ChatPage';
 import { SellerProfilePage } from '@/features/identity/pages/SellerProfilePage';
@@ -32,18 +33,20 @@ export function AppRoutes() {
         <Route path="verify-email" element={<VerifyEmailPage />} />
       </Route>
       <Route element={<MainLayout />}>
-        <Route path="home" element={<HomePage />} />
+        <Route path=":citySlug/listings" element={<CityListingsPage />} />
+        <Route path="home" element={<HomeRedirectPage />} />
         <Route path="browse" element={<BrowseRedirectPage />} />
         <Route path="me" element={<MyAccountPage />} />
         <Route path="me/listings" element={<MyListingsPlaceholderPage />} />
         <Route path="me/settings" element={<SettingsPlaceholderPage />} />
         <Route path="me/notifications" element={<NotificationsPlaceholderPage />} />
         <Route path="listings/:listingId" element={<ListingDetailPage />} />
+        <Route path="listings/:listingId/edit" element={<EditListingPage />} />
         <Route path="sell" element={<PostListingPage />} />
         <Route path="sell/:step" element={<PostListingPage />} />
         <Route path="chats" element={<ChatInboxPage />} />
         <Route path="chats/:conversationId" element={<ChatPage />} />
-        <Route path="profiles/:profileId" element={<SellerProfilePage />} />
+        <Route path="profiles/:userId" element={<SellerProfilePage />} />
         <Route path="communities" element={<CommunitiesPage />} />
         <Route path="communities/create" element={<CreateCommunityPage />} />
         <Route path="communities/:communityId" element={<CommunityDetailPage />} />

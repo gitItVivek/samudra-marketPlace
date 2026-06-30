@@ -1,15 +1,26 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Home, MessageCircle, User, Plus, Users } from 'lucide-react';
+import { cityListingsPath } from '@/app/paths';
+import { useBrowseFilters } from '@/shared/context/BrowseFiltersContext';
 import styles from './BottomNav.module.css';
+
+function isListingsFeed(pathname: string) {
+  return /\/[^/]+\/listings$/.test(pathname);
+}
 
 export function BottomNav() {
   const { pathname } = useLocation();
+  const { city } = useBrowseFilters();
+  const listingsPath = cityListingsPath(city);
 
   return (
     <nav className={styles.nav}>
-      <Link to="/home" className={`${styles.item} ${pathname === '/home' ? styles.active : ''}`}>
+      <Link
+        to={listingsPath}
+        className={`${styles.item} ${isListingsFeed(pathname) ? styles.active : ''}`}
+      >
         <Home size={22} />
-        <span>Home</span>
+        <span>Listings</span>
       </Link>
       <Link
         to="/communities"
