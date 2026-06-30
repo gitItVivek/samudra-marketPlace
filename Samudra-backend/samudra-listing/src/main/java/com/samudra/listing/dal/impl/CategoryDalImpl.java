@@ -1,5 +1,6 @@
 package com.samudra.listing.dal.impl;
 
+import com.samudra.common.enums.CategoryType;
 import com.samudra.listing.dal.CategoryDal;
 import com.samudra.listing.entity.Category;
 import com.samudra.listing.repository.CategoryRepository;
@@ -29,6 +30,11 @@ public class CategoryDalImpl implements CategoryDal {
     @Override
     public Optional<Category> findBySlug(String slug) {
         return categoryRepository.findBySlug(slug);
+    }
+
+    @Override
+    public Optional<Category> findByCategoryType(CategoryType categoryType) {
+        return categoryRepository.findFirstByCategoryTypeAndIsActiveTrue(categoryType);
     }
 
     @Override

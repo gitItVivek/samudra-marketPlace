@@ -4,6 +4,7 @@ import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.ListingCondition;
 import com.samudra.common.enums.ListingStatus;
 import com.samudra.common.enums.ListingType;
+import com.samudra.common.enums.SaleType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -117,6 +118,26 @@ public class Listing {
 
     @Column(columnDefinition = "TEXT")
     private String takenDownReason;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    @Builder.Default
+    private SaleType saleType = SaleType.FIXED_PRICE;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal startingPrice;
+
+    @Column
+    private Instant auctionEndsAt;
+
+    @Column(precision = 12, scale = 2)
+    private BigDecimal currentBidAmount;
+
+    @Column
+    private UUID currentBidId;
+
+    @Column
+    private Instant sellerBidsSeenAt;
 
     @Column
     private Instant deletedAt;

@@ -61,6 +61,7 @@ public class SecurityConfig {
                                 "/v1/auth/oauth/google").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/listings/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/v1/communities/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/search/listings").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .anyRequest().authenticated()
                 )
