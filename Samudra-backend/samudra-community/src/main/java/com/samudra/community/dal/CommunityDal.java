@@ -1,5 +1,6 @@
 package com.samudra.community.dal;
 
+import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.CommunityStatus;
 import com.samudra.community.entity.Community;
 import org.springframework.data.domain.Page;
@@ -21,4 +22,6 @@ public interface CommunityDal {
     Page<Community> findByStatus(CommunityStatus status, Pageable pageable);
 
     Page<Community> findByStatusAndCity(CommunityStatus status, String city, Pageable pageable);
+
+    Page<Community> search(CommunityStatus status, String city, CategoryType categoryType, String q, Pageable pageable);
 }

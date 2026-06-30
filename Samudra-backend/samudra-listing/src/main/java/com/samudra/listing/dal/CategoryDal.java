@@ -1,5 +1,6 @@
 package com.samudra.listing.dal;
 
+import com.samudra.common.enums.CategoryType;
 import com.samudra.listing.entity.Category;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface CategoryDal {
     Optional<Category> findById(UUID id);
 
     Optional<Category> findBySlug(String slug);
+
+    Optional<Category> findByCategoryType(CategoryType categoryType);
 
     boolean existsBySlug(String slug);
 

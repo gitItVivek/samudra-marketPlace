@@ -1,5 +1,6 @@
 package com.samudra.community.dal.impl;
 
+import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.CommunityStatus;
 import com.samudra.community.dal.CommunityDal;
 import com.samudra.community.entity.Community;
@@ -25,7 +26,7 @@ public class CommunityDalImpl implements CommunityDal {
 
     @Override
     public Optional<Community> findById(UUID id) {
-        return communityRepository.findById(id);
+        return communityRepository.findByIdAndDeletedAtIsNull(id);
     }
 
     @Override
@@ -46,5 +47,11 @@ public class CommunityDalImpl implements CommunityDal {
     @Override
     public Page<Community> findByStatusAndCity(CommunityStatus status, String city, Pageable pageable) {
         return communityRepository.findByStatusAndCityAndDeletedAtIsNullOrderByMemberCountDesc(status, city, pageable);
+    }
+
+    @Override
+    public Page<Community> search(
+            CommunityStatus status, String city, CategoryType categoryType, String q, Pageable pageable) {
+        return communityRepository.search(status, city, categoryType, q, pageable);
     }
 }
