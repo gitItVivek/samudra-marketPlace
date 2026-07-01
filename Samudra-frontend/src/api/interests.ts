@@ -1,4 +1,5 @@
 import { apiFetch } from '@/api/client';
+import { getStoredAccessToken } from '@/api/authToken';
 import { API_PATHS } from '@/api/paths';
 
 export type InterestSource = 'SEARCH' | 'EXPLICIT' | 'BROWSE';
@@ -27,26 +28,39 @@ export interface CreateUserInterestPayload {
   source: InterestSource;
 }
 
-export function listMyInterests(token: string) {
-  return apiFetch<UserInterestDto[]>(API_PATHS.interests.base, { token });
+function resolveToken(token?: string | null): string {
+  const resolved = token ?? getStoredAccessToken();
+  if (!resolved) {
+    throw new Error('Not signed in');
+  }
+  return resolved;
 }
 
-export function createInterest(payload: CreateUserInterestPayload, token: string) {
+export function listMyInterests(token?: string | null) {
+  return apiFetch<UserInterestDto[]>(API_PATHS.interests.base, {
+    token: resolveToken(token),
+  });
+}
+
+export function createInterest(payload: CreateUserInterestPayload, token?: string | null) {
   return apiFetch<UserInterestDto>(API_PATHS.interests.base, {
     method: 'POST',
     body: JSON.stringify(payload),
-    token,
+    token: resolveToken(token),
   });
 }
 
-export function updateInterest(id: string, notifyEnabled: boolean, token: string) {
+export function updateInterest(id: string, notifyEnabled: boolean, token?: string | null) {
   return apiFetch<UserInterestDto>(API_PATHS.interests.byId(id), {
     method: 'PATCH',
     body: JSON.stringify({ notifyEnabled }),
-    token,
+    token: resolveToken(token),
   });
 }
 
-export function deleteInterest(id: string, token: string) {
-  return apiFetch<void>(API_PATHS.interests.byId(id), { method: 'DELETE', token });
+export function deleteInterest(id: string, token?: string | null) {
+  return apiFetch<void>(API_PATHS.interests.byId(id), {
+    method: 'DELETE',
+    token: resolveToken(token),
+  });
 }

@@ -73,6 +73,12 @@ export function MyAccountPage() {
         <Link to="/chats" className={styles.rowLink}>
           Messages
         </Link>
+        <Link to="/me/notifications" className={styles.rowLink}>
+          Notifications
+        </Link>
+        <Link to="/me/interests" className={styles.rowLink}>
+          Saved interests
+        </Link>
         <Link to={publicProfilePath(user.id)} className={styles.rowLink}>
           Your public marketplace profile
         </Link>

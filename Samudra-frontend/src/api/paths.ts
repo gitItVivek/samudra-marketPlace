@@ -30,6 +30,9 @@ export const API_PATHS = {
     base: '/v1/me/interests',
     byId: (id: string) => `/v1/me/interests/${id}`,
   },
+  notifications: {
+    base: '/v1/me/notifications',
+  },
   communities: {
     base: '/v1/communities',
     bySlug: (slug: string) => `/v1/communities/${slug}`,

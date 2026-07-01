@@ -1,4 +1,5 @@
 import { apiFetch } from '@/api/client';
+import { resolveAuthToken } from '@/api/authToken';
 import { API_PATHS } from '@/api/paths';
 import type {
   CreateListingPayload,
@@ -39,9 +40,10 @@ function toQuery(params: ListingSearchParams): string {
 }
 
 export function searchListings(params: ListingSearchParams = {}, token?: string | null) {
+  const resolvedToken = resolveAuthToken(token);
   return apiFetch<PagedResponse<ListingSummaryDto>>(
     `${API_PATHS.listings.search}${toQuery(params)}`,
-    token ? { token } : undefined,
+    resolvedToken ? { token: resolvedToken } : undefined,
   );
 }
 

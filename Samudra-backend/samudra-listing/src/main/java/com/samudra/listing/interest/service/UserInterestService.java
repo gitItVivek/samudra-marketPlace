@@ -10,8 +10,11 @@ import com.samudra.common.listing.response.UserInterestResponse;
 import com.samudra.listing.exception.ListingForbiddenException;
 import com.samudra.listing.exception.ListingNotFoundException;
 import com.samudra.listing.interest.entity.UserInterest;
+import com.samudra.listing.interest.InterestFingerprint;
+import com.samudra.listing.interest.cache.InterestRegistrationCache;
 import com.samudra.listing.interest.repository.UserInterestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -19,6 +22,7 @@ import org.springframework.util.StringUtils;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,21 +32,38 @@ public class UserInterestService {
     private static final int COOLDOWN_HOURS = 2;
 
     private final UserInterestRepository userInterestRepository;
+    private final InterestRegistrationCache interestRegistrationCache;
 
     @Transactional
     public UserInterestResponse create(UUID userId, CreateUserInterestRequest request) {
-        UserInterest interest = UserInterest.builder()
-                .userId(userId)
-                .city(request.city().trim())
-                .state(trimToNull(request.state()))
-                .categoryType(request.categoryType())
-                .listingType(request.listingType())
-                .keywords(trimToNull(request.keywords()))
-                .customTag(trimToNull(request.customTag()))
-                .source(request.source())
-                .notifyEnabled(true)
-                .build();
-        return toResponse(userInterestRepository.save(interest));
+        InterestFingerprint fingerprint = InterestFingerprint.of(
+                request.city().trim(),
+                request.categoryType(),
+                request.listingType(),
+                trimToNull(request.keywords()),
+                trimToNull(request.customTag()));
+        if (interestRegistrationCache.isRegistered(userId, fingerprint)) {
+            return findDuplicate(
+                            userId,
+                            request.city().trim(),
+                            request.categoryType(),
+                            request.listingType(),
+                            trimToNull(request.keywords()),
+                            trimToNull(request.customTag()))
+                    .map(this::toResponse)
+                    .orElseThrow(IllegalStateException::new);
+        }
+        UserInterest interest = upsertInterestInDb(
+                userId,
+                request.city().trim(),
+                trimToNull(request.state()),
+                request.categoryType(),
+                request.listingType(),
+                trimToNull(request.keywords()),
+                trimToNull(request.customTag()),
+                request.source());
+        interestRegistrationCache.markRegistered(userId, fingerprint);
+        return toResponse(interest);
     }
 
     @Transactional
@@ -59,17 +80,22 @@ public class UserInterestService {
         if (!StringUtils.hasText(q) && categoryType == null && listingType == null) {
             return;
         }
-        UserInterest interest = UserInterest.builder()
-                .userId(userId)
-                .city(city.trim())
-                .state(trimToNull(state))
-                .categoryType(categoryType)
-                .listingType(listingType)
-                .keywords(trimToNull(q))
-                .source(InterestSource.SEARCH)
-                .notifyEnabled(true)
-                .build();
-        userInterestRepository.save(interest);
+        String keywords = trimToNull(q);
+        InterestFingerprint fingerprint = InterestFingerprint.of(
+                city.trim(), categoryType, listingType, keywords, null);
+        if (interestRegistrationCache.isRegistered(userId, fingerprint)) {
+            return;
+        }
+        upsertInterestInDb(
+                userId,
+                city.trim(),
+                trimToNull(state),
+                categoryType,
+                listingType,
+                keywords,
+                null,
+                InterestSource.SEARCH);
+        interestRegistrationCache.markRegistered(userId, fingerprint);
     }
 
     @Transactional(readOnly = true)
@@ -152,5 +178,58 @@ public class UserInterestService {
             return null;
         }
         return value.trim();
+    }
+
+    private UserInterest upsertInterestInDb(
+            UUID userId,
+            String city,
+            String state,
+            CategoryType categoryType,
+            ListingType listingType,
+            String keywords,
+            String customTag,
+            InterestSource source) {
+        Optional<UserInterest> existing = findDuplicate(
+                userId, city, categoryType, listingType, keywords, customTag);
+        if (existing.isPresent()) {
+            UserInterest interest = existing.get();
+            interest.setUpdatedAt(Instant.now());
+            return userInterestRepository.save(interest);
+        }
+        try {
+            return userInterestRepository.save(UserInterest.builder()
+                    .userId(userId)
+                    .city(city)
+                    .state(state)
+                    .categoryType(categoryType)
+                    .listingType(listingType)
+                    .keywords(keywords)
+                    .customTag(customTag)
+                    .source(source)
+                    .notifyEnabled(true)
+                    .build());
+        } catch (DataIntegrityViolationException ex) {
+            return findDuplicate(userId, city, categoryType, listingType, keywords, customTag)
+                    .orElseThrow(() -> ex);
+        }
+    }
+
+    private Optional<UserInterest> findDuplicate(
+            UUID userId,
+            String city,
+            CategoryType categoryType,
+            ListingType listingType,
+            String keywords,
+            String customTag) {
+        return userInterestRepository.findByUserIdOrderByCreatedAtDesc(userId).stream()
+                .filter(interest -> InterestFingerprint.of(
+                                city, categoryType, listingType, keywords, customTag)
+                        .matches(
+                                interest.getCity(),
+                                interest.getCategoryType(),
+                                interest.getListingType(),
+                                interest.getKeywords(),
+                                interest.getCustomTag()))
+                .findFirst();
     }
 }

@@ -3,6 +3,7 @@ package com.samudra.integration.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samudra.common.events.ListingCreatedEvent;
 import com.samudra.common.identity.response.UserContactResponse;
+import com.samudra.common.listing.request.RecordListingAlertsRequest;
 import com.samudra.common.listing.response.MatchingUserIdsResponse;
 import com.samudra.common.notifications.ListingDigestItem;
 import com.samudra.common.notifications.ListingDigestNotificationRequest;
@@ -109,6 +110,26 @@ public class CoreApiClient {
             httpClient.send(request, HttpResponse.BodyHandlers.discarding());
         } catch (Exception ex) {
             log.warn("markNotified failed userId={}: {}", userId, ex.getMessage());
+        }
+    }
+
+    public void recordInAppAlerts(UUID userId, List<ListingDigestItem> listings) {
+        try {
+            RecordListingAlertsRequest payload = new RecordListingAlertsRequest(listings);
+            String body = objectMapper.writeValueAsString(payload);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(coreBaseUrl + "/v1/internal/interests/" + userId + "/alerts"))
+                    .timeout(Duration.ofSeconds(15))
+                    .header("Content-Type", "application/json")
+                    .header("X-Internal-Token", token())
+                    .POST(HttpRequest.BodyPublishers.ofString(body))
+                    .build();
+            HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 300) {
+                log.warn("recordInAppAlerts failed status={} body={}", response.statusCode(), response.body());
+            }
+        } catch (Exception ex) {
+            log.warn("recordInAppAlerts failed userId={}: {}", userId, ex.getMessage());
         }
     }
 

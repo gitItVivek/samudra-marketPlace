@@ -37,12 +37,14 @@ export function BrowseDiscoverPage() {
   const runSearch = useCallback(
     (opts?: { q?: string; categoryType?: string; listingType?: string }) => {
       const q = opts?.q ?? query;
+      const searchCity = city.trim() || 'Delhi';
+      const searchState = state.trim() || 'Delhi';
       setLoading(true);
       setError(null);
       searchListings(
         {
-          city,
-          state,
+          city: searchCity,
+          state: searchState,
           q: q || undefined,
           categoryType: opts?.categoryType,
           listingType: opts?.listingType,
@@ -68,16 +70,16 @@ export function BrowseDiscoverPage() {
     keywords?: string;
     customTag?: string;
   }) => {
-    if (!accessToken) return;
+    const token = accessToken ?? undefined;
     try {
       await createInterest(
         {
-          city,
-          state,
+          city: city.trim() || 'Delhi',
+          state: state.trim() || 'Delhi',
           source: 'BROWSE',
           ...payload,
         },
-        accessToken,
+        token,
       );
     } catch {
       /* interest save is best-effort; no UI noise */

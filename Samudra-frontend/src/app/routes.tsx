@@ -19,6 +19,7 @@ import { MyAccountPage } from '@/features/profile/pages/MyAccountPage';
 import { MyListingsPlaceholderPage } from '@/features/profile/pages/MyListingsPlaceholderPage';
 import { SettingsPlaceholderPage } from '@/features/profile/pages/SettingsPlaceholderPage';
 import { NotificationsPage } from '@/features/profile/pages/NotificationsPage';
+import { SavedInterestsPage } from '@/features/profile/pages/SavedInterestsPage';
 import { CommunitiesPage } from '@/features/community/pages/CommunitiesPage';
 import { CommunityDetailPage } from '@/features/community/pages/CommunityDetailPage';
 
@@ -40,6 +41,7 @@ export function AppRoutes() {
         <Route path="me/listings" element={<MyListingsPlaceholderPage />} />
         <Route path="me/settings" element={<SettingsPlaceholderPage />} />
         <Route path="me/notifications" element={<NotificationsPage />} />
+        <Route path="me/interests" element={<SavedInterestsPage />} />
         <Route path="listings/:listingId" element={<ListingDetailPage />} />
         <Route path="listings/:listingId/edit" element={<EditListingPage />} />
         <Route path="sell" element={<PostListingPage />} />

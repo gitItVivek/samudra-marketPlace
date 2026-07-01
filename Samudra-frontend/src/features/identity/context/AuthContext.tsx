@@ -10,11 +10,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/app/paths';
 import { defaultListingsPath } from '@/shared/utils/defaultRoute';
+import { ACCESS_TOKEN_STORAGE_KEY, USER_STORAGE_KEY } from '@/api/sessionKeys';
 import * as authApi from '@/api/auth';
 import type { AuthResponse, UserSummary } from '@/shared/types/auth';
 
-const TOKEN_KEY = 'samudra_access_token';
-const USER_KEY = 'samudra_user';
+const TOKEN_KEY = ACCESS_TOKEN_STORAGE_KEY;
+const USER_KEY = USER_STORAGE_KEY;
 
 interface AuthContextValue {
   user: UserSummary | null;

@@ -6,12 +6,16 @@ services:
     image: postgres:16-alpine
     container_name: samudra-postgres
     restart: unless-stopped
+    profiles: ['local-db']
     environment:
       POSTGRES_DB: samudra-marketPlace
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in docker/.env}
+      # Only used with --profile local-db; RDS-only runs do not need POSTGRES_PASSWORD in .env
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-only}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d samudra-marketPlace']
       interval: 5s
@@ -46,6 +50,36 @@ services:
     networks:
       - samudra
 
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: samudra-kafka-ui
+    restart: unless-stopped
+    profiles: ['tools']
+    ports:
+      - '${KAFKA_UI_PORT:-8090}:8080'
+    environment:
+      KAFKA_CLUSTERS_0_NAME: samudra-local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+      DYNAMIC_CONFIG_ENABLED: 'true'
+    depends_on:
+      kafka:
+        condition: service_healthy
+    networks:
+      - samudra
+
+  redis:
+    image: redis:7-alpine
+    container_name: samudra-redis
+    restart: unless-stopped
+    command: ['redis-server', '--save', '', '--appendonly', 'no']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - samudra
+
   backend:
     build:
       context: ..
@@ -54,9 +88,9 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: deploy
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/samudra-marketPlace
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:?Set SPRING_DATASOURCE_URL in docker/.env}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:?Set SPRING_DATASOURCE_USERNAME in docker/.env}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:?Set SPRING_DATASOURCE_PASSWORD in docker/.env}
       SAMUDRA_JWT_SECRET: ${SAMUDRA_JWT_SECRET:?Set SAMUDRA_JWT_SECRET in docker/.env}
       SAMUDRA_OAUTH_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
       SPRING_MAIL_PASSWORD: ${SPRING_MAIL_PASSWORD:-}
@@ -66,10 +100,13 @@ services:
       SAMUDRA_INTERNAL_API_TOKEN: ${SAMUDRA_INTERNAL_API_TOKEN:-samudra-internal-dev}
       SPRING_FLYWAY_REPAIR_ON_MIGRATE: ${SPRING_FLYWAY_REPAIR_ON_MIGRATE:-true}
       SPRING_FLYWAY_VALIDATE_ON_MIGRATE: ${SPRING_FLYWAY_VALIDATE_ON_MIGRATE:-false}
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SAMUDRA_CACHE_REDIS_ENABLED: 'true'
     depends_on:
-      postgres:
-        condition: service_healthy
       kafka:
+        condition: service_healthy
+      redis:
         condition: service_healthy
     # API only on Docker network — browser hits nginx frontend, which proxies /v1 → backend:8080
     networks:

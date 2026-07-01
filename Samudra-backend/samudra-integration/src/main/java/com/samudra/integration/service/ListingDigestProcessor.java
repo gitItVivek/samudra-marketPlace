@@ -36,18 +36,25 @@ public class ListingDigestProcessor {
         if (payload == null || payload.getUserId() == null || payload.getListings().isEmpty()) {
             return;
         }
+        coreApiClient.recordInAppAlerts(payload.getUserId(), payload.getListings());
         UserContactResponse contact = coreApiClient.fetchContact(payload.getUserId());
         if (contact == null || contact.email() == null || contact.email().isBlank()) {
-            log.warn("No email for userId={}, skipping digest", payload.getUserId());
+            log.warn("No email for userId={}, skipping digest email", payload.getUserId());
+            coreApiClient.markNotified(payload.getUserId());
             return;
         }
-        coreApiClient.sendDigest(
-                payload.getUserId(),
-                contact.email(),
-                contact.displayName(),
-                payload.getListings());
-        coreApiClient.markNotified(payload.getUserId());
-        log.info("Digest sent userId={} listings={}", payload.getUserId(), payload.getListings().size());
+        try {
+            coreApiClient.sendDigest(
+                    payload.getUserId(),
+                    contact.email(),
+                    contact.displayName(),
+                    payload.getListings());
+            coreApiClient.markNotified(payload.getUserId());
+            log.info("Digest sent userId={} listings={}", payload.getUserId(), payload.getListings().size());
+        } catch (RuntimeException ex) {
+            log.warn("Digest email failed userId={} — in-app alert still recorded: {}",
+                    payload.getUserId(), ex.getMessage());
+        }
     }
 
     public record UserListingPair(UUID userId, ListingCreatedEvent listing) {

@@ -20,7 +20,9 @@ import com.samudra.listing.entity.ListingImage;
 import com.samudra.listing.exception.InvalidListingStateException;
 import com.samudra.listing.exception.ListingForbiddenException;
 import com.samudra.listing.exception.ListingNotFoundException;
+import com.samudra.listing.interest.cache.ListingSearchCache;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +47,9 @@ public class ListingService {
     private final CategoryService categoryService;
     private final ListingMapper listingMapper;
     private final ApplicationEventPublisher applicationEventPublisher;
+
+    @Autowired(required = false)
+    private ListingSearchCache listingSearchCache;
 
     @Transactional
     public ListingDetailResponse create(UUID userId, CreateListingRequest request) {
@@ -80,6 +85,9 @@ public class ListingService {
         listing = listingDal.save(listing);
         List<ListingImage> images = saveImages(listing, request.imageUrls());
         saveCustomTag(listing, request.customTag());
+        if (listingSearchCache != null) {
+            listingSearchCache.invalidateCity(listing.getCity());
+        }
         publishListingCreated(listing, request.customTag());
         return listingMapper.toDetail(listing, category, images);
     }
@@ -106,6 +114,13 @@ public class ListingService {
             String sort,
             int page,
             int size) {
+        if (listingSearchCache != null) {
+            PagedResponse<ListingSummaryResponse> cached = listingSearchCache.get(
+                    city, state, categoryType, listingType, saleType, q, minPrice, maxPrice, sort, page, size);
+            if (cached != null) {
+                return cached;
+            }
+        }
         Pageable pageable = PageRequest.of(page, size, resolveSort(sort));
         Page<Listing> results = listingDal.search(
                 ListingStatus.ACTIVE, city, state, categoryType, listingType, saleType, q, minPrice, maxPrice, pageable);
@@ -117,7 +132,14 @@ public class ListingService {
                 })
                 .toList();
 
-        return new PagedResponse<>(items, page, size, results.getTotalElements(), results.getTotalPages());
+        PagedResponse<ListingSummaryResponse> response = new PagedResponse<>(
+                items, page, size, results.getTotalElements(), results.getTotalPages());
+        if (listingSearchCache != null) {
+            listingSearchCache.put(
+                    city, state, categoryType, listingType, saleType, q, minPrice, maxPrice, sort, page, size,
+                    response);
+        }
+        return response;
     }
 
     @Transactional(readOnly = true)
