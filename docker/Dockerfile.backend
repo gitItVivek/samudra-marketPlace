@@ -3,8 +3,10 @@
 
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
+# Retry-friendly Gradle build on small EC2 instances (network to Maven / Plugin Portal)
+ENV GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=false"
 COPY Samudra-backend/ ./
-RUN chmod +x gradlew && ./gradlew :samudra-core:bootJar -x test --no-daemon
+RUN chmod +x gradlew && ./gradlew :samudra-core:bootJar -x test --no-daemon --stacktrace
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
