@@ -1,6 +1,7 @@
 package com.samudra.identity.config;
 
 
+import com.samudra.identity.security.InternalApiAuthFilter;
 import com.samudra.identity.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final InternalApiAuthFilter internalApiAuthFilter;
 
     @Value("${samudra.cors.allowed-origin-patterns:http://localhost:*,http://127.0.0.1:*}")
     private String corsAllowedOriginPatterns;
@@ -77,8 +79,10 @@ public class SecurityConfig {
                                 "/v1/communities/**",
                                 "/v1/users/*/marketplace-profile").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
+                        .requestMatchers("/v1/internal/**").permitAll()
                         .anyRequest().authenticated()
                 )
+                .addFilterBefore(internalApiAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

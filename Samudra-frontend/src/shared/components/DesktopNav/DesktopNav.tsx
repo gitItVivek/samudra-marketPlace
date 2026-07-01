@@ -14,14 +14,13 @@ function isListingsFeed(pathname: string) {
 export function DesktopNav() {
   const { pathname } = useLocation();
   const { city } = useBrowseFilters();
-  const { mode } = useFeedView();
+  const { setMode } = useFeedView();
   const listingsPath = cityListingsPath(city);
   const onListingsFeed = isListingsFeed(pathname);
-  const isGridBrowse = onListingsFeed && mode === 'grid';
 
   const isActive = (label: string) => {
-    if (label === 'Listings') return onListingsFeed && mode === 'curated';
-    if (label === 'Browse') return isGridBrowse || pathname === '/browse';
+    if (label === 'Listings') return onListingsFeed;
+    if (label === 'Browse') return pathname === '/browse';
     if (label === 'Communities') return pathname.startsWith('/communities');
     if (label === 'Chats') return pathname.startsWith('/chats');
     return false;
@@ -46,6 +45,7 @@ export function DesktopNav() {
             <Link
               key={label}
               to={to}
+              onClick={label === 'Listings' ? () => setMode('curated') : undefined}
               className={`${styles.link} ${isActive(label) ? styles.linkActive : ''}`}
             >
               <Icon size={18} />

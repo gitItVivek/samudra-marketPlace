@@ -25,6 +25,12 @@ public class GlobalExceptionHandler {
                 .body(ApiErrorResponse.of(409, "EMAIL_ALREADY_EXISTS", ex.getMessage()));
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorResponse> handleUserNotFound(UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ApiErrorResponse.of(404, "USER_NOT_FOUND", "User not found"));
+    }
+
     @ExceptionHandler(AccountNotActiveException.class)
     public ResponseEntity<ApiErrorResponse> handleAccountNotActive(AccountNotActiveException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

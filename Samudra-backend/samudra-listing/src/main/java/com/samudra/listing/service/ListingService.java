@@ -1,5 +1,6 @@
 package com.samudra.listing.service;
 
+import com.samudra.common.events.ListingCreatedEvent;
 import com.samudra.common.enums.CategoryType;
 import com.samudra.common.enums.ListingStatus;
 import com.samudra.common.enums.ListingType;
@@ -20,6 +21,7 @@ import com.samudra.listing.exception.InvalidListingStateException;
 import com.samudra.listing.exception.ListingForbiddenException;
 import com.samudra.listing.exception.ListingNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +44,7 @@ public class ListingService {
     private final ListingAttributeDal listingAttributeDal;
     private final CategoryService categoryService;
     private final ListingMapper listingMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
     public ListingDetailResponse create(UUID userId, CreateListingRequest request) {
@@ -77,6 +80,7 @@ public class ListingService {
         listing = listingDal.save(listing);
         List<ListingImage> images = saveImages(listing, request.imageUrls());
         saveCustomTag(listing, request.customTag());
+        publishListingCreated(listing, request.customTag());
         return listingMapper.toDetail(listing, category, images);
     }
 
@@ -237,6 +241,20 @@ public class ListingService {
                     .build());
         }
         return listingImageDal.saveAll(images);
+    }
+
+    private void publishListingCreated(Listing listing, String customTag) {
+        applicationEventPublisher.publishEvent(new ListingCreatedEvent(
+                listing.getId(),
+                listing.getUserId(),
+                listing.getCity(),
+                listing.getState(),
+                listing.getCategoryType(),
+                listing.getListingType(),
+                listing.getTitle(),
+                listing.getDescription(),
+                customTag != null && !customTag.isBlank() ? customTag.trim() : null,
+                Instant.now()));
     }
 
     private Sort resolveSort(String sort) {

@@ -38,9 +38,10 @@ function toQuery(params: ListingSearchParams): string {
   return qs ? `?${qs}` : '';
 }
 
-export function searchListings(params: ListingSearchParams = {}) {
+export function searchListings(params: ListingSearchParams = {}, token?: string | null) {
   return apiFetch<PagedResponse<ListingSummaryDto>>(
     `${API_PATHS.listings.search}${toQuery(params)}`,
+    token ? { token } : undefined,
   );
 }
 

@@ -12,13 +12,13 @@ import { EditListingPage } from '@/features/listing/pages/EditListingPage';
 import { PostListingPage } from '@/features/listing/pages/PostListingPage';
 import { ChatPage } from '@/features/messaging/pages/ChatPage';
 import { SellerProfilePage } from '@/features/identity/pages/SellerProfilePage';
-import { BrowseRedirectPage } from '@/features/browse/pages/BrowseRedirectPage';
+import { BrowseDiscoverPage } from '@/features/browse/pages/BrowseDiscoverPage';
 import { ChatInboxPage } from '@/features/messaging/pages/ChatInboxPage';
 import { CreateCommunityPage } from '@/features/community/pages/CreateCommunityPage';
 import { MyAccountPage } from '@/features/profile/pages/MyAccountPage';
 import { MyListingsPlaceholderPage } from '@/features/profile/pages/MyListingsPlaceholderPage';
 import { SettingsPlaceholderPage } from '@/features/profile/pages/SettingsPlaceholderPage';
-import { NotificationsPlaceholderPage } from '@/features/profile/pages/NotificationsPlaceholderPage';
+import { NotificationsPage } from '@/features/profile/pages/NotificationsPage';
 import { CommunitiesPage } from '@/features/community/pages/CommunitiesPage';
 import { CommunityDetailPage } from '@/features/community/pages/CommunityDetailPage';
 
@@ -35,11 +35,11 @@ export function AppRoutes() {
       <Route element={<MainLayout />}>
         <Route path=":citySlug/listings" element={<CityListingsPage />} />
         <Route path="home" element={<HomeRedirectPage />} />
-        <Route path="browse" element={<BrowseRedirectPage />} />
+        <Route path="browse" element={<BrowseDiscoverPage />} />
         <Route path="me" element={<MyAccountPage />} />
         <Route path="me/listings" element={<MyListingsPlaceholderPage />} />
         <Route path="me/settings" element={<SettingsPlaceholderPage />} />
-        <Route path="me/notifications" element={<NotificationsPlaceholderPage />} />
+        <Route path="me/notifications" element={<NotificationsPage />} />
         <Route path="listings/:listingId" element={<ListingDetailPage />} />
         <Route path="listings/:listingId/edit" element={<EditListingPage />} />
         <Route path="sell" element={<PostListingPage />} />

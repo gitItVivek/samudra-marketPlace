@@ -5,10 +5,12 @@ import { SuggestedCommunities } from '@/features/community/components/SuggestedC
 import { searchListings } from '@/api/listings';
 import { mapListingSummary } from '@/shared/utils/mappers';
 import { useBrowseFilters } from '@/shared/context/BrowseFiltersContext';
+import { useAuth } from '@/features/identity/context/AuthContext';
 import type { ListingSummary } from '@/shared/types';
 import styles from './CuratedHomeFeed.module.css';
 
 export function CuratedHomeFeed() {
+  const { accessToken } = useAuth();
   const { city } = useBrowseFilters();
   const [listings, setListings] = useState<ListingSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +19,7 @@ export function CuratedHomeFeed() {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    searchListings({ city, page: 0, size: 12 })
+    searchListings({ city, page: 0, size: 12 }, accessToken)
       .then((page) => {
         if (cancelled) return;
         setListings(page.items.map(mapListingSummary));
@@ -31,7 +33,7 @@ export function CuratedHomeFeed() {
     return () => {
       cancelled = true;
     };
-  }, [city]);
+  }, [city, accessToken]);
 
   const nearYou = listings.slice(0, 4);
   const services = listings.filter((l) => l.title.toLowerCase().includes('service')).slice(0, 3);

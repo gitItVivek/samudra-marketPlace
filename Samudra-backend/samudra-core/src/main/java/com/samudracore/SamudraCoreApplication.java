@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages = {
         "com.samudracore",
+        "com.samudra.core",
         "com.samudra.identity",
         "com.samudra.community",
         "com.samudra.listing",

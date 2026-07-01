@@ -26,6 +26,10 @@ export const API_PATHS = {
     bidAnalytics: (id: string) => `/v1/listings/${id}/bids/analytics`,
     markBidsSeen: (id: string) => `/v1/listings/${id}/bids/mark-seen`,
   },
+  interests: {
+    base: '/v1/me/interests',
+    byId: (id: string) => `/v1/me/interests/${id}`,
+  },
   communities: {
     base: '/v1/communities',
     bySlug: (slug: string) => `/v1/communities/${slug}`,

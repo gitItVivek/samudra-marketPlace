@@ -8,10 +8,12 @@ import { Button } from '@/shared/components/Button/Button';
 import { searchListings } from '@/api/listings';
 import { mapListingSummary } from '@/shared/utils/mappers';
 import { useBrowseFilters } from '@/shared/context/BrowseFiltersContext';
+import { useAuth } from '@/features/identity/context/AuthContext';
 import type { ListingSummary } from '@/shared/types';
 import styles from './GridMarketplaceFeed.module.css';
 
 export function GridMarketplaceFeed() {
+  const { accessToken } = useAuth();
   const { city, state, categoryType, q } = useBrowseFilters();
   const [visibleCount, setVisibleCount] = useState(GRID_PAGE_SIZE);
   const [filters, setFilters] = useState<ListingFiltersState>(defaultListingFilters);
@@ -24,14 +26,17 @@ export function GridMarketplaceFeed() {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    searchListings({
-      city,
-      state,
-      categoryType,
-      q: q || undefined,
-      page: 0,
-      size: 50,
-    })
+    searchListings(
+      {
+        city,
+        state,
+        categoryType,
+        q: q || undefined,
+        page: 0,
+        size: 50,
+      },
+      accessToken,
+    )
       .then((page) => {
         if (cancelled) return;
         setListings(page.items.map(mapListingSummary));
@@ -47,7 +52,7 @@ export function GridMarketplaceFeed() {
     return () => {
       cancelled = true;
     };
-  }, [city, state, categoryType, q]);
+  }, [city, state, categoryType, q, accessToken]);
 
   const visible = listings.slice(0, visibleCount);
   const hasMore = visibleCount < listings.length;

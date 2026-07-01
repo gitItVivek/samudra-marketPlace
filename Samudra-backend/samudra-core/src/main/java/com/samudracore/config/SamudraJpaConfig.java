@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.samudra.identity.entity",
         "com.samudra.community.entity",
         "com.samudra.listing.entity",
+        "com.samudra.listing.interest.entity",
         "com.samudra.messaging.entity",
         "com.samudra.auction.entity"
 })
@@ -16,6 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.samudra.identity.repository",
         "com.samudra.community.repository",
         "com.samudra.listing.repository",
+        "com.samudra.listing.interest.repository",
         "com.samudra.messaging.repository",
         "com.samudra.auction.repository"
 })

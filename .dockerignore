@@ -1,0 +1,27 @@
+# Shrink Docker build context (repo root is context for all Dockerfiles)
+
+.git
+.github
+.cursor
+.idea
+.vscode
+*.md
+docs/
+
+# Frontend — not needed for backend/integration images; node_modules is huge
+Samudra-frontend/node_modules
+Samudra-frontend/dist
+Samudra-frontend/.vite
+
+# Backend build outputs and caches
+Samudra-backend/**/build
+Samudra-backend/.gradle
+
+# Local env / secrets
+docker/.env
+**/.env
+**/.env.*
+
+# OS junk
+**/.DS_Store
+**/Thumbs.db

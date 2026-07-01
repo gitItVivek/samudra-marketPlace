@@ -1,0 +1,31 @@
+plugins {
+    id 'org.springframework.boot'
+}
+
+description = 'samudra-integration'
+
+ext {
+    camelVersion = '4.8.1'
+}
+
+dependencies {
+    implementation project(':samudra-common')
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation platform("org.apache.camel.springboot:camel-spring-boot-bom:${camelVersion}")
+    implementation 'org.apache.camel.springboot:camel-spring-boot-starter'
+    implementation 'org.apache.camel.springboot:camel-kafka-starter'
+    implementation 'org.apache.camel.springboot:camel-jackson-starter'
+    implementation 'org.apache.camel.springboot:camel-http-starter'
+    implementation 'org.apache.camel.springboot:camel-micrometer-starter'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+bootJar {
+    archiveFileName = 'samudra-integration.jar'
+}
